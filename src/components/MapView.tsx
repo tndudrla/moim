@@ -9,10 +9,14 @@ export default function MapView({
   restaurants,
   selected,
   onSelect,
+  centerBadge = 'SK',
+  centerLabel = '서린빌딩',
 }: {
   restaurants: Restaurant[];
   selected: Restaurant | null;
   onSelect: (r: Restaurant) => void;
+  centerBadge?: string; // 중심 마커 안 표시(본사='SK', 그 외=국기)
+  centerLabel?: string; // 중심 마커 아래 라벨(사업장/도시명)
 }) {
   // 라벨이 겹치지 않게 방문횟수 상위 8곳 + 선택된 곳만 이름 표시
   const labeled = new Set(
@@ -79,11 +83,11 @@ export default function MapView({
             );
           })}
 
-          {/* 회사 마커 */}
+          {/* 중심(사업장) 마커 — 선택 위치에 따라 라벨/뱃지 변경 */}
           <g>
             <rect x={-90} y={-90} width={180} height={180} rx={40} fill="#3d0b12" />
             <text y={35} fontSize={85} fill="#fff" textAnchor="middle" fontWeight={900}>
-              SK
+              {centerBadge}
             </text>
             <text
               y={280}
@@ -95,7 +99,7 @@ export default function MapView({
               strokeWidth={20}
               paintOrder="stroke"
             >
-              서린빌딩
+              {centerLabel}
             </text>
           </g>
         </svg>
