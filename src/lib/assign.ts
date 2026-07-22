@@ -15,7 +15,7 @@ export interface Stats {
 const LUNCH_WEIGHT: Record<string, number> = {
   'mugyodong-bugeoguk': 9, cheongjinok: 8, 'seorin-nakji': 8, mijin: 6,
   'imun-seolnongtang': 6, 'gwanghwamun-gukbap': 5, gomgooksijip: 5, misien: 4,
-  buminok: 4, yonggeumok: 3, misoya: 3, hanilkwan: 3,
+  buminok: 4, yonggeumok: 3, sushisora: 3, hanilkwan: 3,
 };
 const DINNER_WEIGHT: Record<string, number> = {
   'seorin-nakji': 5, yeolchajip: 6, cheongjinok: 4, bogeonok: 5,

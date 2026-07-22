@@ -25,6 +25,8 @@ export interface Restaurant {
   google: { score: number; count: number };
   naverBooking: boolean;
   catchtable: boolean;
+  address?: string; // 카카오 로컬 API 실측
+  placeUrl?: string; // 카카오맵 장소 페이지
   // 파생 필드
   visitCount: number;
   totalAmount: number;
@@ -38,8 +40,8 @@ export interface Restaurant {
 
 export const COMPANY = 'SK서린빌딩';
 
-// SK서린빌딩(종로구 종로 26) 대략 좌표. dx/dy(m)를 위경도로 환산해 실지도에 표시
-export const COMPANY_LATLNG = { lat: 37.5688, lng: 126.9804 };
+// SK서린빌딩(종로구 종로 26) — 카카오 로컬 API 실측 좌표. dx/dy(m)를 위경도로 환산해 실지도에 표시
+export const COMPANY_LATLNG = { lat: 37.56978877, lng: 126.98033123 };
 
 export function latLngOf(r: { dx: number; dy: number }): { lat: number; lng: number } {
   return {

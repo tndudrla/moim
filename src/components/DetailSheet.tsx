@@ -43,6 +43,7 @@ export default function DetailSheet({
               </span>
             </div>
             <p className="mt-0.5 text-sm text-slate-500">{r.desc}</p>
+            {r.address && <p className="mt-0.5 text-xs text-slate-400">{r.address}</p>}
           </div>
           <button
             onClick={onClose}
@@ -101,7 +102,7 @@ export default function DetailSheet({
         {/* 액션 */}
         <div className="mt-4 flex gap-2">
           <a
-            href={`https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}
+            href={r.placeUrl ?? `https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}
             target="_blank"
             rel="noreferrer"
             className="flex-1 rounded-xl bg-slate-900 py-3 text-center text-sm font-bold text-white"
