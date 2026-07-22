@@ -135,6 +135,8 @@ export default function MoimApp() {
   const [antiGraft, setAntiGraft] = useState(false);
   const [halalOnly, setHalalOnly] = useState(false);
   const [newOnly, setNewOnly] = useState(false);
+  const [roomOnly, setRoomOnly] = useState(false);
+  const [parkOnly, setParkOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showCulture, setShowCulture] = useState(false);
   const [sort, setSort] = useState<Sort>('visits');
@@ -217,6 +219,8 @@ export default function MoimApp() {
       if (antiGraft && r.priceTier === 3) return false;
       if (halalOnly && !r.features?.halal) return false;
       if (newOnly && !r.isNew) return false;
+      if (roomOnly && !r.features?.room) return false;
+      if (parkOnly && !r.features?.parking) return false;
       return true;
     });
     list = [...list].sort((a, b) => {
@@ -231,7 +235,7 @@ export default function MoimApp() {
       return a.distM - b.distM;
     });
     return list;
-  }, [sourceList, style, age, gender, budget, dist, cuisines, antiGraft, halalOnly, newOnly, sort, boostActive]);
+  }, [sourceList, style, age, gender, budget, dist, cuisines, antiGraft, halalOnly, newOnly, roomOnly, parkOnly, sort, boostActive]);
 
   // 🆕 필터 ON + 본사일 때 서울시 인허가 기반 신규 오픈 식당 (거리·음식종류 필터 적용)
   const newPlaces = useMemo(() => {
@@ -256,7 +260,8 @@ export default function MoimApp() {
   };
 
   const activeDetailCount =
-    (age !== null ? 1 : 0) + (gender !== 'all' ? 1 : 0) + (budget ? 1 : 0) + (dist ? 1 : 0) + cuisines.size;
+    (age !== null ? 1 : 0) + (gender !== 'all' ? 1 : 0) + (roomOnly ? 1 : 0) + (parkOnly ? 1 : 0) +
+    (budget ? 1 : 0) + (dist ? 1 : 0) + cuisines.size;
   const account = STYLE_ACCOUNT[style];
 
   return (
@@ -451,6 +456,14 @@ export default function MoimApp() {
                   {l}
                 </Chip>
               ))}
+            </FilterRow>
+            <FilterRow label="시설">
+              <Chip active={roomOnly} onClick={() => setRoomOnly((v) => !v)}>
+                🚪 룸 보유
+              </Chip>
+              <Chip active={parkOnly} onClick={() => setParkOnly((v) => !v)}>
+                🅿️ 주차 편리
+              </Chip>
             </FilterRow>
             <FilterRow label="예산">
               {[1, 2, 3].map((t) => (

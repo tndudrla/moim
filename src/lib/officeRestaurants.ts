@@ -115,6 +115,7 @@ function generate(office: Office): Restaurant[] {
       features: {
         premium: priceTier === 3,
         room: priceTier >= 2 && rng() < 0.7,
+        parking: priceTier === 3 || rng() < 0.4,
         quiet: priceTier >= 2,
         group: purposes.includes('저녁 회식'),
         english: overseas || rng() < 0.3,

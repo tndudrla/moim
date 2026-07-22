@@ -52,6 +52,8 @@ export default function RestaurantCard({
               {r.distM}m · 도보 {r.walkMin}분
             </span>
             <span>{PRICE_LABEL[r.priceTier]}</span>
+            {r.features?.room && <span className="text-slate-500">🚪 룸</span>}
+            {r.features?.parking && <span className="text-slate-500">🅿️ 주차</span>}
           </div>
         </div>
         <div className="shrink-0 text-right">

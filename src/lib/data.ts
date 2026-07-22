@@ -15,6 +15,7 @@ export interface Visit {
 // 접대/회식 상황 매칭용 식당 특성 플래그 (본사 실데이터는 미기입 → undefined)
 export interface RestaurantFeatures {
   room?: boolean; // 룸/개별실
+  parking?: boolean; // 주차 편리(전용/발렛)
   quiet?: boolean; // 조용한 분위기
   premium?: boolean; // 고급/프리미엄
   group?: boolean; // 단체석
@@ -105,6 +106,11 @@ export function buildRestaurants(stats: Record<string, Stats>): Restaurant[] {
     const reviewCount = r.kakao.count + r.naver.count + r.google.count;
     return {
       ...r,
+      // 룸/주차는 실데이터 수집 전 임시 추정치. json에 features가 기입되면 그 값이 우선
+      features: r.features ?? {
+        room: r.priceTier === 3 || (r.priceTier === 2 && r.purposes.includes('접대')),
+        parking: r.priceTier === 3,
+      },
       visitCount: s?.count ?? 0,
       totalAmount: s?.totalAmount ?? 0,
       lastDate: s?.lastDate ?? '',
