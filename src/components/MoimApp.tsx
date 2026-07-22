@@ -21,6 +21,7 @@ import { OFFICES, officesByCategory, type Office, type OfficeCategory } from '@/
 import { restaurantsForOffice } from '@/lib/officeRestaurants';
 import { cultureOf } from '@/lib/culture';
 import RestaurantCard from './RestaurantCard';
+import SniperBanner from './SniperBanner';
 import MapView from './MapView';
 import KakaoMap from './KakaoMap';
 import DetailSheet from './DetailSheet';
@@ -489,6 +490,9 @@ export default function MoimApp() {
           </div>
         )}
       </header>
+
+      {/* 빈자리 감시 기능 소개 — 캐치테이블은 국내 전용이라 해외 위치에서는 숨김 */}
+      {!isOverseas && <SniperBanner />}
 
       {/* 정렬 · 결과 수 */}
       <div className="flex items-center justify-between px-4 py-3">

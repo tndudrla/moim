@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 // 캐치테이블 빈자리 감시 — 개인 PC의 모심 에이전트(localhost 브리지)를 통해
 // 본인 PC·본인 계정으로 Claude Code(catchtable-sniper 스킬)를 실행한다.
-const AGENT = 'http://localhost:43110';
-const SETUP_CMD = 'irm https://moim-blush.vercel.app/setup.ps1 | iex';
+export const AGENT = 'http://localhost:43110';
+export const SETUP_CMD = 'irm https://moim-blush.vercel.app/setup.ps1 | iex';
 
 type AgentStatus = { agent: boolean; claude: boolean; skill: boolean };
 
