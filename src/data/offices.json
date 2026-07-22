@@ -1,0 +1,313 @@
+{
+  "_comment": "회사 본사/해외법인/국내 자회사 위치 데이터. lat/lng는 지도 표시용(미기입은 null). tag: ✨=신규정리, ⚠️=주소확인필요.",
+  "offices": [
+    {
+      "category": "본사",
+      "name": "SK서린빌딩",
+      "country": "대한민국",
+      "flag": "🏢",
+      "city": "서울",
+      "address": "서울 종로구 종로 26",
+      "lat": 37.5688,
+      "lng": 126.9804,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "LNG Americas",
+      "country": "미국",
+      "flag": "🇺🇸",
+      "city": "휴스턴",
+      "address": "1980 Post Oak Blvd., Suite 2000, Houston, TX 77056",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "Passkey",
+      "country": "미국",
+      "flag": "🇺🇸",
+      "city": "뉴욕",
+      "address": "10 Hudson Yards, 40F, New York, NY 10001",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "PRISM Energy China",
+      "country": "중국",
+      "flag": "🇨🇳",
+      "city": "베이징",
+      "address": "51F, China World Tower B, No.1 Jianguomenwai Ave, Chaoyang, Beijing 100004",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "PRISM Energy Australia",
+      "country": "호주",
+      "flag": "🇦🇺",
+      "city": "퍼스",
+      "address": "Level 27, Central Park, 152-158 St Georges Terrace, Perth WA 6000",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "PRISM Energy Pte",
+      "country": "싱가포르",
+      "flag": "🇸🇬",
+      "city": "싱가포르",
+      "address": "50 Collyer Quay #05-07, OUE Bayfront, Singapore 049321",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "PT PRISM Nusantara",
+      "country": "인도네시아",
+      "flag": "🇮🇩",
+      "city": "자카르타",
+      "address": "Treasury Tower 25F, District 8 SCBD Lot 28, Jl. Jendral Sudirman, Jakarta 12190",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "해외법인",
+      "name": "베트남 법인",
+      "country": "베트남",
+      "flag": "🇻🇳",
+      "city": "호치민",
+      "address": "Unit 1, Level 33, Bitexco Financial Tower",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "해외법인",
+      "name": "런던 사무소",
+      "country": "영국",
+      "flag": "🇬🇧",
+      "city": "런던",
+      "address": "20 N Audley St, London W1K 6LX",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "출장지",
+      "name": "부산 출장",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "부산",
+      "address": "부산 해운대구 센텀 일대 (자주 가는 출장지)",
+      "lat": 35.1697,
+      "lng": 129.1306,
+      "tag": null
+    },
+    {
+      "category": "출장지",
+      "name": "두바이 출장",
+      "country": "UAE",
+      "flag": "🇦🇪",
+      "city": "두바이",
+      "address": "Dubai, United Arab Emirates (자주 가는 출장지)",
+      "lat": 25.2048,
+      "lng": 55.2708,
+      "tag": null
+    },
+    {
+      "category": "출장지",
+      "name": "하노이 출장",
+      "country": "베트남",
+      "flag": "🇻🇳",
+      "city": "하노이",
+      "address": "Hanoi, Vietnam (자주 가는 출장지)",
+      "lat": 21.0278,
+      "lng": 105.8342,
+      "tag": null
+    },
+    {
+      "category": "출장지",
+      "name": "프랑크푸르트 출장",
+      "country": "독일",
+      "flag": "🇩🇪",
+      "city": "프랑크푸르트",
+      "address": "Frankfurt am Main, Germany (자주 가는 출장지)",
+      "lat": 50.1109,
+      "lng": 8.6821,
+      "tag": null
+    },
+    {
+      "category": "출장지",
+      "name": "오사카 출장",
+      "country": "일본",
+      "flag": "🇯🇵",
+      "city": "오사카",
+      "address": "Osaka, Japan (자주 가는 출장지)",
+      "lat": 34.6937,
+      "lng": 135.5023,
+      "tag": null
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "코원에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "서울",
+      "address": "서울 강남구 남부순환로 3165",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "부산도시가스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "부산",
+      "address": "부산 해운대구 좌동순환로217번길 24",
+      "lat": null,
+      "lng": null,
+      "tag": "⚠️"
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "영남에너지서비스(구미)",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "구미",
+      "address": "경북 구미시 1공단로6길 94",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "영남에너지서비스(포항)",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "포항",
+      "address": "경북 포항시 북구 소티재로 208 (창포동)",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "충청에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "청주",
+      "address": "충북 청주시 흥덕구 산단로 244",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "전남도시가스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "순천",
+      "address": "전남 순천시 장선배기길 31",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "전북에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "익산",
+      "address": "전북 익산시 삼기면 산단도마4길 87",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "국내 도시가스 자회사",
+      "name": "강원도시가스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "춘천",
+      "address": "강원 춘천시 삭주로 163",
+      "lat": null,
+      "lng": null,
+      "tag": null
+    },
+    {
+      "category": "발전·집단에너지 자회사",
+      "name": "나래에너지서비스(집단에너지)",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "하남",
+      "address": "경기 하남시 위례대로4길 29",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "발전·집단에너지 자회사",
+      "name": "나래에너지서비스(O&M)",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "하남",
+      "address": "경기 하남시 조정대로 77 (하남열병합발전소 내)",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "발전·집단에너지 자회사",
+      "name": "위례에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "하남",
+      "address": "경기 하남시 위례대로4길 29",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "발전·집단에너지 자회사",
+      "name": "파주에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "파주",
+      "address": "경기 파주시 파주읍 휴암로 336-234",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "발전·집단에너지 자회사",
+      "name": "여주에너지서비스㈜",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "여주",
+      "address": "경기 여주시 북내면 외재로 185",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    },
+    {
+      "category": "수소 자회사",
+      "name": "아이지이(IGE)",
+      "country": "대한민국",
+      "flag": "🇰🇷",
+      "city": "인천",
+      "address": "인천 서구 봉수대로 415",
+      "lat": null,
+      "lng": null,
+      "tag": "✨"
+    }
+  ]
+}

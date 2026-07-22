@@ -11,6 +11,16 @@ export interface Visit {
   card: string;
 }
 
+// 접대/회식 상황 매칭용 식당 특성 플래그 (mosim 목업의 f.* 이식)
+export interface RestaurantFeatures {
+  room?: boolean; // 룸/개별실
+  quiet?: boolean; // 조용한 분위기
+  premium?: boolean; // 고급/프리미엄
+  group?: boolean; // 단체석
+  english?: boolean; // 영어 메뉴/응대
+  halal?: boolean; // 할랄
+}
+
 export interface Restaurant {
   id: string;
   name: string;
@@ -25,6 +35,9 @@ export interface Restaurant {
   google: { score: number; count: number };
   naverBooking: boolean;
   catchtable: boolean;
+  loc: string; // 소속 사업장(office name). 기본 본사(SK서린빌딩)
+  features: RestaurantFeatures;
+  isNew: boolean; // 최근 새로 오픈
   // 파생 필드
   visitCount: number;
   totalAmount: number;
@@ -74,18 +87,48 @@ export const CUISINE_COLOR: Record<Cuisine, string> = {
 
 import type { Stats } from './assign';
 
+export const HQ_OFFICE = 'SK서린빌딩';
+
+// json 식당의 기존 필드로 접대 특성(features)을 유추 (목업엔 수기였던 f.* 대체)
+function inferFeatures(
+  r: { priceTier: number; naverBooking: boolean; catchtable: boolean; purposes: Purpose[] }
+): RestaurantFeatures {
+  const bookable = r.naverBooking || r.catchtable;
+  return {
+    premium: r.priceTier === 3,
+    room: r.priceTier === 3 || (r.priceTier === 2 && bookable),
+    quiet: r.priceTier >= 2,
+    group: r.purposes.includes('저녁 회식'),
+    english: r.purposes.includes('접대') && bookable,
+    halal: false, // 본사 주변 식당은 할랄 미표기
+  };
+}
+
 // 방문 통계(기본: visits.json, 업로드 시: 브라우저에서 재계산)로 식당 목록 구성
 export function buildRestaurants(stats: Record<string, Stats>): Restaurant[] {
   return (
-    restaurantsJson.restaurants as Omit<
+    restaurantsJson.restaurants as (Omit<
       Restaurant,
-      'visitCount' | 'totalAmount' | 'lastDate' | 'byAccount' | 'recent' | 'rating' | 'reviewCount' | 'walkMin'
-    >[]
+      | 'loc'
+      | 'features'
+      | 'isNew'
+      | 'visitCount'
+      | 'totalAmount'
+      | 'lastDate'
+      | 'byAccount'
+      | 'recent'
+      | 'rating'
+      | 'reviewCount'
+      | 'walkMin'
+    > & { isNew?: boolean })[]
   ).map((r) => {
     const s = stats[r.id];
     const reviewCount = r.kakao.count + r.google.count;
     return {
       ...r,
+      loc: HQ_OFFICE,
+      features: inferFeatures(r),
+      isNew: r.isNew ?? false,
       visitCount: s?.count ?? 0,
       totalAmount: s?.totalAmount ?? 0,
       lastDate: s?.lastDate ?? '',
