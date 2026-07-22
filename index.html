@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모심 · 상황 맞춤 식당 추천 AI</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --bg:#eef1f7; --bg2:#f7f9fc; --card:#ffffff; --line:#e7eaf1; --line2:#eef1f6;
+    --ink:#151b28; --sub:#6d7688; --faint:#9aa2b1;
+    --navy:#1b2440; --blue:#2f5bea; --blue-soft:#eef2fe;
+    --gold:#b8892b; --gold-soft:#f7efe0; --green:#12915a; --green-soft:#e6f6ee; --red:#e5484d;
+    --shadow-sm:0 1px 2px rgba(20,30,60,.05);
+    --shadow:0 2px 6px rgba(20,30,60,.06),0 12px 32px rgba(20,30,60,.07);
+    --shadow-lg:0 10px 40px rgba(20,30,60,.12);
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased}
+  body{margin:0;font-family:"Pretendard","Segoe UI",-apple-system,sans-serif;
+    background:linear-gradient(180deg,#eef1f7 0%,#f4f6fb 260px,#f4f6fb 100%);color:var(--ink);line-height:1.55}
+  header{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+    padding:14px 26px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:20}
+  header .logo{font-weight:800;font-size:21px;letter-spacing:-.6px}
+  header .logo span{color:var(--blue)}
+  header .sub{font-size:13px;color:var(--sub);font-weight:500}
+  header .hq{margin-left:auto;font-size:12.5px;color:var(--sub);display:flex;align-items:center;gap:6px}
+  header .hq b{color:var(--navy);font-weight:700}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 20px 70px}
+  h2{font-size:23px;margin:4px 0 6px;letter-spacing:-.5px;font-weight:800}
+  .lead{color:var(--sub);font-size:14px;margin:0 0 20px}
+  .muted{color:var(--sub);font-size:13px}
+
+  .btn{border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;transition:.16s;font-family:inherit}
+  .btn.primary{background:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(47,91,234,.28)}
+  .btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(47,91,234,.34)}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:#cfd6e4}
+  .btn.sm{padding:8px 13px;font-size:13px;border-radius:10px}
+  .back{background:none;border:none;color:var(--sub);cursor:pointer;font-size:14px;margin-bottom:12px;padding:4px 0;font-weight:600;font-family:inherit}
+  .back:hover{color:var(--ink)}
+
+  .tabs{display:flex;gap:6px;margin-bottom:22px;background:#e4e8f1;padding:5px;border-radius:14px;width:fit-content}
+  .tab{padding:9px 20px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;color:#5a6480;transition:.15s}
+  .tab.on{background:#fff;color:var(--navy);box-shadow:var(--shadow-sm)}
+
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  .mode{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 28px;
+    cursor:pointer;box-shadow:var(--shadow);transition:.2s;overflow:hidden}
+  .mode:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .mode::before{content:"";position:absolute;inset:0 0 auto 0;height:5px}
+  .mode.host::before{background:linear-gradient(90deg,#c8912f,#e8c877)}
+  .mode.party::before{background:linear-gradient(90deg,#2f5bea,#7aa0ff)}
+  .mode .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:28px;margin-bottom:16px}
+  .mode.host .ic{background:var(--gold-soft)}
+  .mode.party .ic{background:var(--blue-soft)}
+  .mode h3{margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.4px}
+  .mode .cap{color:var(--sub);font-size:14px;font-weight:600}
+  .mode .ex{margin-top:16px;color:var(--faint);font-size:12.5px;line-height:1.7;border-top:1px solid var(--line2);padding-top:14px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;cursor:pointer;box-shadow:var(--shadow);transition:.16s}
+  .pcard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+  .pcard .emo{font-size:26px}
+  .pcard h4{margin:10px 0 5px;font-size:17px;font-weight:800}
+  .pcard p{margin:0;font-size:12.5px;color:var(--sub);line-height:1.55}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+  .divider{height:1px;background:var(--line2);margin:20px -22px}
+  .flabel{font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--faint);text-transform:uppercase;margin:0 0 10px}
+  label.f{display:block;font-size:12.5px;font-weight:700;margin:0 0 7px;color:#3d4759}
+  select,input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff;color:var(--ink);font-family:inherit;transition:.14s}
+  select:focus,input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:8px 15px;border:1px solid var(--line);border-radius:22px;cursor:pointer;font-size:13px;font-weight:600;background:#fff;user-select:none;transition:.13s}
+  .chip:hover{border-color:#cfd6e4}
+  .chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .row{display:grid;grid-template-columns:1.5fr .7fr .8fr;gap:14px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.row,.row2{grid-template-columns:1fr}}
+
+  .locmeta{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:12.5px;color:var(--sub);flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.2px}
+  .pill.dom{background:var(--blue-soft);color:var(--blue)}
+  .pill.ovs{background:var(--green-soft);color:var(--green)}
+  .regbox{margin-top:14px;padding:16px;border:1px dashed #c9d2e2;border-radius:14px;background:#fafbff}
+  .regchip{display:inline-flex;align-items:center;gap:8px;padding:7px 9px 7px 13px;border:1px solid var(--line);border-radius:22px;font-size:13px;font-weight:600;background:#fff;margin:0 2px}
+  .regchip button{border:none;background:var(--navy);color:#fff;border-radius:14px;padding:4px 11px;font-size:11px;cursor:pointer;font-weight:700;font-family:inherit}
+
+  .results{display:grid;grid-template-columns:1.12fr .88fr;gap:18px;align-items:start}
+  @media(max-width:860px){.results{grid-template-columns:1fr}.modes{grid-template-columns:1fr}}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 19px;box-shadow:var(--shadow);margin-bottom:14px;transition:.16s}
+  .rcard.hi{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft),var(--shadow)}
+  .rcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .rank{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:var(--navy);color:#fff;font-size:13px;font-weight:800;margin-right:8px;vertical-align:middle}
+  .rcard h4{margin:0;font-size:17px;font-weight:800;display:inline}
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin:11px 0 0}
+  .bdg{font-size:11px;padding:4px 9px;border-radius:7px;font-weight:700}
+  .bdg.cui{background:#eef2ff;color:var(--navy)}
+  .bdg.ver{background:var(--green-soft);color:var(--green)}
+  .bdg.walk{background:#fff2e2;color:#b26a00}
+  .bdg.law{background:#f2ecff;color:#6b4bb5}
+  .bdg.halal{background:#e4f6ee;color:#0a7a52}
+  .reason{background:#f6f8ff;border-left:3px solid var(--blue);padding:10px 13px;border-radius:0 9px 9px 0;font-size:13px;color:#33405c;margin:12px 0 0}
+  .reason b{color:var(--blue);font-weight:700}
+  .rlinks{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .rlinks a{font-size:12px;font-weight:600;text-decoration:none;color:var(--navy);border:1px solid var(--line);padding:7px 12px;border-radius:9px}
+  .rlinks a:hover{background:#f4f7ff;border-color:#cfd6e4}
+  .price{font-weight:800;color:var(--navy);font-size:15px;white-space:nowrap;text-align:right}
+  .price small{font-weight:500;color:var(--faint);font-size:11px}
+  .infobox{border-radius:12px;padding:12px 15px;margin-bottom:13px;font-size:13px}
+  .infobox.law{background:#faf7ff;border:1px solid #e7ddf7;color:#5b4b8a}
+  .infobox.cul{background:#fff8ef;border:1px solid #f2e2c8;color:#7a5a1e}
+  .infobox.cul ul{margin:7px 0 0;padding-left:18px}
+  .infobox.cul li{margin:3px 0}
+  .src{font-size:11.5px;color:var(--faint);margin-bottom:12px;font-weight:600}
+  .src b{color:var(--navy)}
+
+  .mapbox{position:sticky;top:78px}
+  svg.map{width:100%;height:auto;background:#eaf0f8;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .maplegend{font-size:11px;color:var(--sub);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+  .dbhead{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .live{font-size:12px;color:var(--green);font-weight:700}
+  .live::before{content:"●";margin-right:5px;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+  @media(max-width:640px){.kpis{grid-template-columns:1fr}}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+  .kpi .lab{font-size:12px;color:var(--sub);font-weight:600}
+  .kpi .num{font-size:27px;font-weight:800;letter-spacing:-.5px;margin-top:4px}
+  .kpi .num small{font-size:15px;font-weight:700;color:var(--sub)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line2)}
+  th{color:var(--faint);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.new td{animation:flash 2.2s ease}
+  @keyframes flash{0%{background:#fff6d8}100%{background:transparent}}
+  .deptt{background:#eef1f8;padding:2px 8px;border-radius:7px;font-size:11.5px;font-weight:700;color:var(--navy);margin:1px}
+  .thumb{border:1px solid var(--line);background:#fff;border-radius:20px;padding:5px 12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--navy);transition:.13s;font-family:inherit}
+  .thumb:hover{border-color:var(--blue);background:var(--blue-soft)}
+  .thumb.liked{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .rest-nm{font-weight:700}
+  .hidden{display:none}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transition:.3s;z-index:50;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">모심<span>.</span></div>
+  <div class="sub">상황 맞춤 식당 추천 AI</div>
+  <div class="hq">🏢 본사 <b>서린빌딩</b> · 서울 종로구 종로 26</div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab on" data-tab="reco" onclick="switchTab('reco')">🔎 추천받기</div>
+    <div class="tab" data-tab="db" onclick="switchTab('db')">📊 전사 접대 실적</div>
+  </div>
+
+  <div id="tab-reco">
+    <section id="v-home">
+      <h2>오늘 어떤 자리인가요?</h2>
+      <p class="lead">상황을 고르면 조건·법인카드 실적·현지 식문화까지 반영해 AI가 골라드립니다.</p>
+      <div class="modes">
+        <div class="mode host" onclick="pickMode('host')">
+          <div class="ic">🍷</div>
+          <h3>접대</h3><div class="cap">손님을 모신다</div>
+          <div class="ex">해외 파트너 · 사장님 · 임원 · 거래처<br>격식·룸 · 김영란법 · 해외 식문화 · 전사 실적</div>
+        </div>
+        <div class="mode party" onclick="pickMode('party')">
+          <div class="ic">🎉</div>
+          <h3>회식</h3><div class="cap">우리끼리 먹는다</div>
+          <div class="ex">부서 회식 · 뒤풀이 · 워크샵<br>연령대 · 예산대 · 음식종류 · 가성비·단체석</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-profile" class="hidden">
+      <button class="back" onclick="show('v-home')">← 처음으로</button>
+      <h2>누구를 모시나요?</h2>
+      <div class="grid" id="profileGrid" style="margin-top:8px"></div>
+    </section>
+
+    <section id="v-form" class="hidden">
+      <button class="back" onclick="goBackFromForm()">← 이전</button>
+      <h2 id="formTitle"></h2>
+      <div class="panel">
+        <p class="flabel">장소 · 규모</p>
+        <div class="row">
+          <div>
+            <label class="f">장소 (본사 / 해외법인 / 출장지)</label>
+            <select id="fOrigin" onchange="onOriginChange()"></select>
+          </div>
+          <div><label class="f">인원</label>
+            <select id="fPeople"><option>2</option><option>4</option><option selected>6</option><option>8</option><option>10</option></select></div>
+          <div><label class="f">도보</label>
+            <select id="fWalk"><option value="5">5분 이내</option><option value="10" selected>10분 이내</option><option value="15">15분 이내</option></select></div>
+        </div>
+        <div class="locmeta" id="locMeta"></div>
+        <div style="margin-top:12px"><button class="btn ghost sm" onclick="toggleReg()">＋ 출장지 등록</button></div>
+        <div id="regBox" class="regbox hidden">
+          <b style="font-size:13px">자주 가는 출장지를 등록하세요</b>
+          <div class="muted" style="margin:4px 0 12px">등록하면 위 목록에 추가됩니다. (해외는 국가별 식문화·구글맵 자동 반영)</div>
+          <div class="chips" id="regCatalog"></div>
+        </div>
+
+        <div class="divider"></div>
+        <p class="flabel">필터</p>
+        <div class="row2">
+          <div><label class="f">연령대</label>
+            <select id="fAge"><option value="">상관없음</option><option>20대</option><option selected>30대</option><option>40대</option><option>50대 이상</option></select></div>
+          <div><label class="f">1인 예산</label>
+            <select id="fBudget"><option value="0">상관없음</option><option value="2">2만원 이하</option><option value="3">3만원 이하</option><option value="5">5만원 이하</option><option value="99">예산 넉넉 · 고급</option></select></div>
+        </div>
+        <label class="f" style="margin-top:14px">음식 종류 <span class="muted" style="font-weight:400">(원하는 것만 켜기)</span></label>
+        <div class="chips" id="cuisineChips"></div>
+
+        <div id="hostExtra" class="hidden" style="margin-top:16px;padding:13px 15px;background:#faf7ff;border:1px solid #e7ddf7;border-radius:12px">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;font-weight:700">
+            <input type="checkbox" id="fGraft" style="width:auto">
+            ⚖️ 손님이 <b>청탁금지법(김영란법) 적용 대상</b> <span class="muted" style="font-weight:400">(공직자·언론인·사립교직원 등)</span>
+          </label>
+          <div class="muted" style="margin-top:6px">체크 시 <b>1인 5만원 초과</b> 식당 자동 제외 (식사 한도 5만원, 2024.8.27~)</div>
+        </div>
+
+        <button class="btn primary" style="margin-top:20px;width:100%" onclick="runRecommend()">🤖 AI 추천 받기</button>
+      </div>
+    </section>
+
+    <section id="v-result" class="hidden">
+      <button class="back" onclick="show('v-form')">← 조건 바꾸기</button>
+      <h2 id="resultTitle"></h2>
+      <div class="results">
+        <div id="cards"></div>
+        <div class="mapbox">
+          <div id="mapWrap"></div>
+          <div class="maplegend">
+            <span><span class="dot" style="background:var(--navy)"></span><span id="mapCenterLbl">본사</span></span>
+            <span><span class="dot" style="background:var(--green)"></span>실적 있음</span>
+            <span><span class="dot" style="background:var(--blue)"></span>추천</span>
+            <span>동심원 = 도보 5·10·15분</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="tab-db" class="hidden">
+    <div class="dbhead">
+      <div>
+        <h2 style="margin-bottom:2px">📊 전사 접대 실적</h2>
+        <div class="muted">법인카드·회계(ERP) 연동으로 <b>자동 집계</b> · 손님은 <b>부서 기준</b>(실명 X) · 후기 대신 👍</div>
+      </div>
+      <div class="live">실시간 반영 (법인카드 승인 연동)</div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="lab">총 접대 건수</div><div class="num" id="kCount">–</div></div>
+      <div class="kpi"><div class="lab">총 사용 금액</div><div class="num" id="kAmount">–</div></div>
+      <div class="kpi"><div class="lab">참여 부서</div><div class="num" id="kDept">–</div></div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <b style="font-size:14px">식당별 실적 (법인카드 집계)</b>
+        <button class="btn ghost sm" onclick="recvTx()">＋ 법카 승인 수신 (데모)</button>
+      </div>
+      <div class="muted" style="margin-bottom:8px">횟수·금액은 회계 데이터에서 자동 계산됩니다. 👍는 직원이 "좋았어요"로 남깁니다.</div>
+      <table>
+        <thead><tr>
+          <th>식당 · 지역</th><th class="num">방문</th><th class="num">총 사용액</th><th class="num">1인 평균</th><th>사용 부서</th><th class="num">👍</th>
+        </tr></thead>
+        <tbody id="txBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== 장소 ===================== */
+const LOCATIONS = {
+  "본사":     {label:"본사 · 서린빌딩 (종로)", kind:"본사",     country:null,        address:"서울 종로구 종로 26", registered:true},
+  "도쿄법인": {label:"도쿄 법인",             kind:"해외법인", country:"일본",       registered:true},
+  "상하이법인":{label:"상하이 법인",           kind:"해외법인", country:"중국",       registered:true},
+  "뉴욕법인": {label:"뉴욕 법인",             kind:"해외법인", country:"미국",       registered:true},
+  "부산":     {label:"부산 (출장)",           kind:"출장지",   country:null,        registered:true},
+  "자카르타": {label:"자카르타 (출장)",        kind:"출장지",   country:"인도네시아", registered:true},
+  "두바이":   {label:"두바이 (출장)",          kind:"출장지",   country:"UAE",       registered:true},
+  "싱가포르": {label:"싱가포르 (출장)",        kind:"출장지",   country:"싱가포르",   registered:false},
+  "하노이":   {label:"하노이 (출장)",          kind:"출장지",   country:"베트남",     registered:false},
+  "프랑크푸르트":{label:"프랑크푸르트 (출장)",  kind:"출장지",   country:"독일",       registered:false},
+};
+const isOv = info => !!info.country;
+
+/* ===================== 국가별 식문화 ===================== */
+const CULTURE = {
+  일본:{flag:"🇯🇵", halal:false, tips:["접대는 개인룸(코시츠) 선호, 정숙한 분위기","술은 상대 잔을 채워주고 첫 건배까지 대기","명함 교환은 두 손으로 정중히","생선/날것 호불호 미리 확인"]},
+  중국:{flag:"🇨🇳", halal:false, tips:["원형 테이블·회전판, 호스트가 주문 주도","건배(간베이) 문화 — 술 강권은 피하기","요리는 짝수로, 생선은 통째로가 길함","상석 배치·예약 격식 중시"]},
+  인도네시아:{flag:"🇮🇩", halal:true, tips:["무슬림 다수 → 할랄 필수, 돼지고기·주류 금지","오른손으로 식사·전달","라마단 기간 낮 식사·회식 배려"]},
+  UAE:{flag:"🇦🇪", halal:true, tips:["할랄 필수, 돼지고기·주류 원칙 금지","주류는 호텔 내 라이선스 레스토랑만","라마단 기간 낮 시간 식사 자제","왼손 사용·발바닥 노출 지양"]},
+  미국:{flag:"🇺🇸", halal:false, tips:["팁 문화(15~20%) 반영","알레르기·비건·글루텐프리 옵션 확인","예약 시 dietary restriction 미리 고지","호스트가 계산 주체를 명확히"]},
+  싱가포르:{flag:"🇸🇬", halal:false, tips:["다민족(중화·말레이·인도) — 손님 배경별 배려","무슬림엔 할랄, 힌두엔 소고기·채식 확인","호커센터~파인다이닝까지 선택폭 넓음"]},
+  베트남:{flag:"🇻🇳", halal:false, tips:["더운 날씨 — 시원한 실내/룸 선호","접대는 격식 레스토랑, 건배 문화 있음","고수·향신료 호불호 미리 확인"]},
+  독일:{flag:"🇩🇪", halal:false, tips:["시간 엄수·예약 필수","채식·글루텐프리 옵션 확인","비즈니스 디너는 조용한 분위기","팁 5~10% 관례"]},
+};
+
+/* ===================== 식당(샘플) ===================== */
+const RESTAURANTS = [
+  {id:1,loc:"본사",name:"수라 한정식",cuisine:"한식",cat:"한식>한정식",price:5,walk:6,x:58,y:40,f:{room:1,valet:1,english:1,quiet:1,premium:1,group:1}},
+  {id:2,loc:"본사",name:"종로 오마카세",cuisine:"일식",cat:"일식>스시",price:8,walk:9,x:38,y:36,f:{room:1,valet:1,english:1,quiet:1,premium:1}},
+  {id:3,loc:"본사",name:"인사동 한우",cuisine:"한식",cat:"한식>고기",price:6,walk:8,x:62,y:60,f:{room:1,valet:1,quiet:1,premium:1,group:1}},
+  {id:4,loc:"본사",name:"트라토리아 서린",cuisine:"양식",cat:"양식>이탈리안",price:4,walk:7,x:44,y:62,f:{room:1,english:1,quiet:1,group:1}},
+  {id:5,loc:"본사",name:"청진동 중화",cuisine:"중식",cat:"중식>중식당",price:3,walk:5,x:55,y:52,f:{room:1,group:1}},
+  {id:6,loc:"본사",name:"광화문 갈매기살",cuisine:"한식",cat:"한식>고기",price:2,walk:4,x:48,y:46,f:{group:1}},
+  {id:7,loc:"본사",name:"라멘 종로",cuisine:"일식",cat:"일식>라멘",price:2,walk:6,x:41,y:54,f:{english:1}},
+  {id:8,loc:"본사",name:"더 스테이크 종로",cuisine:"양식",cat:"양식>스테이크",price:7,walk:11,x:68,y:34,f:{room:1,valet:1,english:1,quiet:1,premium:1}},
+  {id:9,loc:"본사",name:"피맛골 막국수",cuisine:"한식",cat:"한식>면",price:1,walk:5,x:52,y:63,f:{group:1}},
+  {id:10,loc:"본사",name:"북촌 스시조",cuisine:"일식",cat:"일식>스시",price:9,walk:12,x:34,y:44,f:{room:1,valet:1,english:1,quiet:1,premium:1}},
+  {id:11,loc:"부산",name:"해운대 회정원",cuisine:"일식",cat:"일식>회",price:5,walk:6,x:56,y:42,f:{room:1,quiet:1,group:1,premium:1}},
+  {id:12,loc:"부산",name:"부산 돼지국밥",cuisine:"한식",cat:"한식>국밥",price:1,walk:4,x:47,y:55,f:{group:1}},
+  {id:13,loc:"부산",name:"광안리 오션테라스",cuisine:"양식",cat:"양식>다이닝",price:4,walk:9,x:62,y:58,f:{english:1,quiet:1,room:1}},
+  {id:20,loc:"도쿄법인",name:"긴자 스시 코우",cuisine:"일식",cat:"일식>스시",price:9,walk:7,x:57,y:41,f:{room:1,quiet:1,premium:1,english:1}},
+  {id:21,loc:"도쿄법인",name:"토리키 야키토리",cuisine:"일식",cat:"일식>이자카야",price:3,walk:5,x:46,y:52,f:{group:1}},
+  {id:22,loc:"도쿄법인",name:"트라토리아 도쿄",cuisine:"양식",cat:"양식>이탈리안",price:5,walk:9,x:63,y:60,f:{room:1,english:1,quiet:1}},
+  {id:30,loc:"상하이법인",name:"상하이 팰리스",cuisine:"중식",cat:"중식>고급중식",price:7,walk:8,x:58,y:40,f:{room:1,premium:1,english:1,group:1,quiet:1}},
+  {id:31,loc:"상하이법인",name:"딤섬 하우스",cuisine:"중식",cat:"중식>딤섬",price:3,walk:5,x:45,y:53,f:{group:1,english:1}},
+  {id:32,loc:"상하이법인",name:"더 번드 스테이크",cuisine:"양식",cat:"양식>스테이크",price:8,walk:11,x:64,y:57,f:{room:1,english:1,quiet:1,premium:1}},
+  {id:60,loc:"뉴욕법인",name:"맨해튼 스테이크하우스",cuisine:"양식",cat:"양식>스테이크",price:9,walk:9,x:58,y:40,f:{room:1,premium:1,english:1,quiet:1}},
+  {id:61,loc:"뉴욕법인",name:"브루클린 다이너",cuisine:"양식",cat:"양식>아메리칸",price:3,walk:5,x:46,y:53,f:{group:1,english:1}},
+  {id:62,loc:"뉴욕법인",name:"스시 NY",cuisine:"일식",cat:"일식>스시",price:7,walk:11,x:63,y:58,f:{english:1,quiet:1,room:1}},
+  {id:40,loc:"자카르타",name:"인터콘 할랄 다이닝",cuisine:"양식",cat:"다이닝",price:6,walk:9,x:57,y:42,f:{room:1,english:1,premium:1,quiet:1,halal:1}},
+  {id:41,loc:"자카르타",name:"부미 사테 하우스",cuisine:"아시안",cat:"아시안>인니",price:2,walk:5,x:46,y:54,f:{group:1,halal:1}},
+  {id:42,loc:"자카르타",name:"스파이스 가든",cuisine:"아시안",cat:"아시안>할랄",price:4,walk:7,x:62,y:58,f:{group:1,english:1,halal:1,room:1}},
+  {id:50,loc:"두바이",name:"알 만사프 (호텔)",cuisine:"아시안",cat:"중동>파인다이닝",price:8,walk:8,x:57,y:41,f:{room:1,premium:1,english:1,quiet:1,halal:1}},
+  {id:51,loc:"두바이",name:"데저트 로즈 그릴",cuisine:"양식",cat:"양식>그릴",price:6,walk:10,x:64,y:56,f:{english:1,halal:1,room:1}},
+  {id:52,loc:"두바이",name:"마즐리스 아라빅",cuisine:"아시안",cat:"중동>아랍",price:4,walk:6,x:45,y:53,f:{group:1,halal:1}},
+  {id:70,loc:"싱가포르",name:"마리나 그랜드",cuisine:"양식",cat:"양식>다이닝",price:8,walk:8,x:57,y:41,f:{room:1,english:1,quiet:1,premium:1}},
+  {id:71,loc:"싱가포르",name:"라우파삿 호커",cuisine:"아시안",cat:"아시안>호커",price:2,walk:5,x:46,y:53,f:{group:1,english:1}},
+  {id:72,loc:"싱가포르",name:"할랄 스파이스 SG",cuisine:"아시안",cat:"아시안>할랄",price:4,walk:7,x:63,y:58,f:{group:1,english:1,halal:1,room:1}},
+  {id:80,loc:"하노이",name:"롯데 하노이 다이닝",cuisine:"양식",cat:"양식>다이닝",price:6,walk:8,x:57,y:41,f:{room:1,english:1,quiet:1,premium:1}},
+  {id:81,loc:"하노이",name:"포 가호이",cuisine:"아시안",cat:"아시안>베트남",price:1,walk:4,x:46,y:53,f:{group:1}},
+  {id:82,loc:"하노이",name:"하노이 가든",cuisine:"아시안",cat:"아시안>베트남",price:3,walk:7,x:63,y:58,f:{group:1,english:1,room:1}},
+  {id:90,loc:"프랑크푸르트",name:"마인타워 그릴",cuisine:"양식",cat:"양식>그릴",price:8,walk:9,x:57,y:41,f:{room:1,english:1,quiet:1,premium:1}},
+  {id:91,loc:"프랑크푸르트",name:"압펠바인 하우스",cuisine:"양식",cat:"양식>독일식",price:3,walk:5,x:46,y:53,f:{group:1}},
+  {id:92,loc:"프랑크푸르트",name:"프랑크푸르트 스테이크",cuisine:"양식",cat:"양식>스테이크",price:6,walk:11,x:63,y:58,f:{room:1,english:1,quiet:1}},
+];
+const R = id => RESTAURANTS.find(r=>r.id===id);
+
+const PROFILES = {
+  해외파트너:{emo:"🌏",desc:"외국어 메뉴·현지 배려. 룸·격식 필수",need:["room","english"],budget:6},
+  사장님:{emo:"👔",desc:"최상급·프라이빗 룸·발렛·조용함",need:["room","quiet","premium"],budget:8},
+  임원:{emo:"🏢",desc:"격식과 접근성. 룸 선호",need:["room","quiet"],budget:6},
+  거래처:{emo:"🤝",desc:"대화 가능한 조용한 홀. 무난",need:["quiet"],budget:4},
+};
+
+/* ===================== 법인카드 거래 실적(회계 연동) ===================== */
+let TX = [
+  {dept:"해외사업본부",rid:1,profile:"해외파트너",people:4,amount:198000,date:"07-18"},
+  {dept:"전략기획실",rid:1,profile:"임원",people:6,amount:312000,date:"07-15"},
+  {dept:"영업1팀",rid:1,profile:"해외파트너",people:5,amount:255000,date:"07-13"},
+  {dept:"영업1팀",rid:3,profile:"거래처",people:4,amount:248000,date:"07-19"},
+  {dept:"재무팀",rid:3,profile:"임원",people:5,amount:305000,date:"07-11"},
+  {dept:"전략기획실",rid:2,profile:"사장님",people:2,amount:196000,date:"07-20"},
+  {dept:"해외사업본부",rid:8,profile:"해외파트너",people:3,amount:225000,date:"07-09"},
+  {dept:"영업2팀",rid:4,profile:"거래처",people:6,amount:252000,date:"07-17"},
+  {dept:"R&D센터",rid:6,profile:"부서회식",people:8,amount:176000,date:"07-21"},
+  {dept:"인사팀",rid:5,profile:"부서회식",people:10,amount:298000,date:"07-16"},
+  {dept:"해외사업본부",rid:30,profile:"해외파트너",people:4,amount:288000,date:"07-10"},
+  {dept:"해외사업본부",rid:20,profile:"거래처",people:3,amount:279000,date:"07-08"},
+];
+let LIKES = {1:12,2:5,3:8,4:4,5:2,6:9,8:3,20:6,30:5};
+const FEED=[
+  {dept:"영업1팀",rid:3,profile:"거래처",people:4,amount:236000},
+  {dept:"해외사업본부",rid:20,profile:"해외파트너",people:3,amount:315000},
+  {dept:"재무팀",rid:8,profile:"임원",people:5,amount:340000},
+  {dept:"전략기획실",rid:2,profile:"사장님",people:4,amount:412000},
+  {dept:"인사팀",rid:6,profile:"부서회식",people:8,amount:184000},
+];
+let feedIdx=0;
+
+function aggOf(rid, prof){
+  let list=TX.filter(t=>t.rid===rid);
+  if(prof){ const same=list.filter(t=>t.profile===prof); if(same.length) list=same; }
+  if(!list.length) return null;
+  const total=list.reduce((s,t)=>s+t.amount,0);
+  const ppl=list.reduce((s,t)=>s+t.people,0);
+  const depts=[...new Set(list.map(t=>t.dept))];
+  return {count:list.length, total, per:total/ppl, depts, likes:LIKES[rid]||0};
+}
+const won = n => '₩'+Math.round(n).toLocaleString('en-US');
+const man = n => (n/10000).toFixed(1)+'만';
+
+/* ===================== 상태 ===================== */
+let mode=null, profile=null;
+const cuisineList=["한식","중식","일식","양식","아시안"];
+let cuisineOn=new Set(cuisineList);
+
+/* ===================== 공통 ===================== */
+function show(id){document.querySelectorAll('#tab-reco section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);}
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));
+  document.getElementById('tab-reco').classList.toggle('hidden',t==='db');
+  document.getElementById('tab-db').classList.toggle('hidden',t!=='db');
+  if(t==='db') renderDB();
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+/* ===================== 홈/프로필/폼 ===================== */
+function pickMode(m){ mode=m; if(m==='host'){ renderProfiles(); show('v-profile'); } else { profile=null; openForm(); } }
+function renderProfiles(){
+  const g=document.getElementById('profileGrid');g.innerHTML='';
+  Object.entries(PROFILES).forEach(([k,p])=>{
+    const el=document.createElement('div');el.className='pcard';
+    el.innerHTML=`<div class="emo">${p.emo}</div><h4>${k}</h4><p>${p.desc}</p>`;
+    el.onclick=()=>{profile=k;openForm();};
+    g.appendChild(el);
+  });
+}
+function goBackFromForm(){ mode==='host'?show('v-profile'):show('v-home'); }
+
+function rebuildOrigins(){
+  const sel=document.getElementById('fOrigin');const cur=sel.value;sel.innerHTML='';
+  const groups={"본사":null,"해외법인":null,"출장지":null};
+  Object.entries(LOCATIONS).forEach(([k,v])=>{
+    if(!v.registered) return;
+    if(!groups[v.kind]){ const g=document.createElement('optgroup'); g.label=v.kind; groups[v.kind]=g; sel.appendChild(g); }
+    const o=document.createElement('option'); o.value=k; o.textContent=v.label; groups[v.kind].appendChild(o);
+  });
+  if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
+}
+function onOriginChange(){
+  const info=LOCATIONS[document.getElementById('fOrigin').value];
+  const pill=isOv(info)?`<span class="pill ovs">해외 · Google Places</span>`:`<span class="pill dom">국내 · 네이버</span>`;
+  const extra=info.address?`📍 ${info.address}`:(isOv(info)?`🌐 ${info.country} 식문화 자동 반영`:'');
+  document.getElementById('locMeta').innerHTML=`${pill}<span>${extra}</span>`;
+}
+function toggleReg(){const b=document.getElementById('regBox');b.classList.toggle('hidden');if(!b.classList.contains('hidden'))renderRegCatalog();}
+function renderRegCatalog(){
+  const c=document.getElementById('regCatalog');c.innerHTML='';
+  const pend=Object.entries(LOCATIONS).filter(([,v])=>!v.registered);
+  if(!pend.length){c.innerHTML='<span class="muted">등록 가능한 출장지를 모두 추가했습니다.</span>';return;}
+  pend.forEach(([k,v])=>{
+    const el=document.createElement('span');el.className='regchip';
+    el.innerHTML=`${isOv(v)?(CULTURE[v.country]?.flag||'🌐'):'📍'} ${v.label} <button>등록</button>`;
+    el.querySelector('button').onclick=()=>registerTrip(k);c.appendChild(el);
+  });
+}
+function registerTrip(k){
+  LOCATIONS[k].registered=true;rebuildOrigins();
+  document.getElementById('fOrigin').value=k;onOriginChange();renderRegCatalog();
+  toast(`✅ 출장지 등록 — ${LOCATIONS[k].label}`);
+}
+function openForm(){
+  rebuildOrigins();
+  document.getElementById('hostExtra').classList.toggle('hidden', mode!=='host');
+  document.getElementById('regBox').classList.add('hidden');
+  document.getElementById('formTitle').textContent = mode==='host' ? `🍷 접대 · ${profile} 모시기` : '🎉 회식 조건';
+  const c=document.getElementById('cuisineChips');c.innerHTML='';cuisineOn=new Set(cuisineList);
+  cuisineList.forEach(cu=>{
+    const el=document.createElement('div');el.className='chip on';el.textContent=cu;
+    el.onclick=()=>{el.classList.toggle('on');el.classList.contains('on')?cuisineOn.add(cu):cuisineOn.delete(cu);};
+    c.appendChild(el);
+  });
+  onOriginChange();show('v-form');
+}
+
+/* ===================== 추천 로직 ===================== */
+function ageBoost(r,age){
+  if(age==='20대'||age==='30대') return (r.f.premium?-0.5:0.6)+(r.price<=3?0.5:0);
+  if(age==='40대'||age==='50대 이상') return (r.f.quiet?0.5:0)+(r.f.premium?0.5:0)+(r.cuisine==='한식'?0.4:0);
+  return 0;
+}
+function runRecommend(){
+  const loc=document.getElementById('fOrigin').value, info=LOCATIONS[loc];
+  const walk=+document.getElementById('fWalk').value, people=+document.getElementById('fPeople').value;
+  const age=document.getElementById('fAge').value, cap=+document.getElementById('fBudget').value;
+  let cands=RESTAURANTS.filter(r=>r.loc===loc && r.walk<=walk);
+
+  cands=cands.filter(r=>cuisineOn.has(r.cuisine));
+  if(cap>0 && cap<99) cands=cands.filter(r=>r.price<=cap);
+
+  const graft = mode==='host' && document.getElementById('fGraft').checked;
+  let graftExcluded=0;
+  if(graft){ const b=cands.length; cands=cands.filter(r=>r.price<=5); graftExcluded=b-cands.length; }
+  const halalNeed = isOv(info) && CULTURE[info.country] && CULTURE[info.country].halal;
+  if(halalNeed) cands=cands.filter(r=>r.f.halal);
+
+  if(mode==='host'){
+    const p=PROFILES[profile];
+    cands=cands.filter(r=>p.need.every(n=>r.f[n]));
+    if(profile==='해외파트너' && !isOv(info)) cands=cands.filter(r=>r.cuisine!=='중식');
+    cands.forEach(r=>{const a=aggOf(r.id,profile);
+      r._score=(r.f.premium?2:0)+(a?a.count*1.2+a.likes*0.3:0)+(cap===99&&r.f.premium?1.2:0)+(4-Math.abs(r.price-p.budget))*0.4+ageBoost(r,age);});
+  } else {
+    const target=cap>0&&cap<99?cap:2;
+    cands.forEach(r=>{const a=aggOf(r.id,null);
+      r._score=(5-Math.abs(r.price-target))*1.2+(r.f.group&&people>=6?1.6:0)+(a?a.likes*0.25:0)+ageBoost(r,age);});
+  }
+  cands.sort((a,b)=>b._score-a._score);
+  renderResult(cands.slice(0,4), {loc,info,walk,people,age,graft,graftExcluded});
+}
+
+function reasonFor(r,opt){
+  let s='';
+  if(mode==='host'){
+    if(profile==='해외파트너'){
+      const lead=r.cuisine==='한식'?'외국 손님이 한국 음식을 경험하기 좋고':`외국 손님도 편하게 즐기는 ${r.cuisine} 코스에`;
+      s=`${lead}, ${r.f.room?'프라이빗 룸':'조용한 자리'}·${r.f.english?'영어 메뉴':'응대'}가 있어 안심입니다.`;
+    }
+    else if(profile==='사장님') s=`격식과 프라이버시를 갖춘 곳으로, ${r.f.valet?'발렛':'주차'}·룸이 가능해 대표님 모시기에 적합합니다.`;
+    else if(profile==='임원') s=`적당한 격식과 접근성을 갖춰 임원 접대에 무난하며, 룸에서 조용히 대화할 수 있습니다.`;
+    else s=`대화 나누기 좋은 조용한 분위기로 거래처 실무 미팅에 적합합니다.`;
+  } else {
+    s=`${opt.age?opt.age+' 취향에 맞는 ':''}${r.cuisine} 메뉴로, ${r.f.group?`단체석이 있어 ${opt.people}명 모임`:'소규모 모임'}에 좋습니다.`;
+  }
+  const a=aggOf(r.id, mode==='host'?profile:null);
+  if(a) s+=` <b>전사 ${a.count}회 접대 · 1인 평균 ${man(a.per)} · 👍${a.likes}.</b>`;
+  if(isOv(opt.info) && CULTURE[opt.info.country] && CULTURE[opt.info.country].halal && r.f.halal)
+    s+=` 🕌 무슬림 손님 배려 — 할랄 인증·무알콜 옵션 확인 권장.`;
+  return s;
+}
+
+function renderResult(list,opt){
+  const c=opt.info.country, ov=isOv(opt.info);
+  document.getElementById('resultTitle').textContent =
+    (mode==='host'?`🍷 ${profile}`:'🎉 회식') + ` · ${opt.info.label} · AI 추천 ${list.length}곳`;
+  document.getElementById('mapCenterLbl').textContent = opt.info.kind==='본사'?'본사':(ov?'현지 거점':'출장 거점');
+  const box=document.getElementById('cards');box.innerHTML='';
+  box.innerHTML += `<div class="src">데이터 출처 · <b>${ov?'Google Places (해외)':'네이버 지역검색 (국내)'}</b> · 실적 <b>법인카드/회계</b></div>`;
+  if(ov && CULTURE[c]) box.innerHTML += `<div class="infobox cul">${CULTURE[c].flag} <b>${c} 식문화 고려사항</b><ul>${CULTURE[c].tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+  if(opt.graft) box.innerHTML += `<div class="infobox law">⚖️ <b>김영란법 모드</b> — 1인 5만원 이하만 추천${opt.graftExcluded?` · 한도 초과 <b>${opt.graftExcluded}곳 제외</b>`:''}</div>`;
+  if(!list.length){ box.innerHTML += '<div class="panel">조건에 맞는 곳이 없어요. 도보·예산·음식 종류를 넓혀보세요.</div>'; renderMap([],opt); show('v-result'); return; }
+
+  list.forEach((r,i)=>{
+    const a=aggOf(r.id, mode==='host'?profile:null);
+    const q=encodeURIComponent(r.name);
+    const mapLink=ov?`https://www.google.com/maps/search/${q}`:`https://map.naver.com/p/search/${q}`;
+    const el=document.createElement('div');el.className='rcard';el.dataset.rid=r.id;
+    el.onmouseenter=()=>highlightPin(r.id,true);el.onmouseleave=()=>highlightPin(r.id,false);
+    el.innerHTML=`
+      <div class="top">
+        <div><span class="rank">${i+1}</span><h4>${r.name}</h4>
+          <div class="badges">
+            <span class="bdg cui">${r.cuisine} · ${r.cat.split('>')[1]||r.cat}</span>
+            <span class="bdg walk">📍 도보 ${r.walk}분</span>
+            ${r.f.halal?`<span class="bdg halal">🕌 할랄</span>`:''}
+            ${a?`<span class="bdg ver">📊 ${a.count}회 · 👍${a.likes}</span>`:''}
+            ${opt.graft?`<span class="bdg law">⚖️ 한도 내</span>`:''}
+          </div>
+        </div>
+        <div class="price">1인 ${r.price}만원대<br><small>예상</small></div>
+      </div>
+      <div class="reason">🤖 ${reasonFor(r,opt)}</div>
+      <div class="rlinks">
+        <a href="${mapLink}" target="_blank">${ov?'구글맵':'네이버 지도'}</a>
+        ${ov?'':`<a href="https://app.catchtable.co.kr" target="_blank">캐치테이블</a>`}
+        <a href="tel:0212345678">전화</a>
+      </div>`;
+    box.appendChild(el);
+  });
+  renderMap(list,opt);show('v-result');
+}
+
+/* ===================== 지도 ===================== */
+function renderMap(list,opt){
+  const W=380,H=380,cx=W*0.5,cy=H*0.5,sc=3.0;
+  const px=r=>({x:cx+(r.x-50)*sc, y:cy+(r.y-50)*sc});
+  let pins='';
+  list.forEach(r=>{
+    const p=px(r);const a=aggOf(r.id, mode==='host'?profile:null);
+    const col=a?'var(--green)':'var(--blue)';
+    pins+=`<g class="pin" data-rid="${r.id}" transform="translate(${p.x},${p.y})" style="cursor:pointer" onclick="scrollCard(${r.id})">
+      <circle r="9" fill="${col}" stroke="#fff" stroke-width="2"><title>${r.name}</title></circle>
+      <text y="-13" text-anchor="middle" font-size="10" font-weight="700" fill="#1b2440">${r.name}</text></g>`;
+  });
+  const rings=[5,10,15].map(m=>`<circle cx="${cx}" cy="${cy}" r="${m*8}" fill="none" stroke="#c7d1e2" stroke-dasharray="4 4"/>
+     <text x="${cx+m*8-4}" y="${cy-3}" font-size="9" fill="#9aa7bd">${m}분</text>`).join('');
+  const emo=opt&&isOv(opt.info)?'📍':'🏢';
+  document.getElementById('mapWrap').innerHTML=`
+   <svg class="map" viewBox="0 0 ${W} ${H}">
+     <rect width="${W}" height="${H}" fill="#eaf0f8"/>
+     <line x1="0" y1="${cy}" x2="${W}" y2="${cy}" stroke="#dbe3ef"/><line x1="${cx}" y1="0" x2="${cx}" y2="${H}" stroke="#dbe3ef"/>
+     ${rings}
+     <g transform="translate(${cx},${cy})"><rect x="-12" y="-12" width="24" height="24" rx="6" fill="var(--navy)"/><text y="4" text-anchor="middle" font-size="12" fill="#fff">${emo}</text></g>
+     ${pins}
+   </svg>`;
+}
+function highlightPin(rid,on){
+  const g=document.querySelector(`.pin[data-rid="${rid}"] circle`); if(g) g.setAttribute('r',on?'13':'9');
+  const c=document.querySelector(`.rcard[data-rid="${rid}"]`); if(c) c.classList.toggle('hi',on);
+}
+function scrollCard(rid){const c=document.querySelector(`.rcard[data-rid="${rid}"]`);if(c){c.classList.add('hi');c.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>c.classList.remove('hi'),1500);}}
+
+/* ===================== 전사 실적 DB ===================== */
+function renderDB(){
+  const total=TX.reduce((s,t)=>s+t.amount,0);
+  const depts=new Set(TX.map(t=>t.dept));
+  document.getElementById('kCount').innerHTML=`${TX.length}<small> 건</small>`;
+  document.getElementById('kAmount').innerHTML=`${(total/10000).toFixed(0)}<small>만원</small>`;
+  document.getElementById('kDept').innerHTML=`${depts.size}<small> 개 부서</small>`;
+
+  const map={};
+  TX.forEach(t=>{ (map[t.rid]||(map[t.rid]={rid:t.rid,count:0,total:0,ppl:0,depts:new Set(),_new:false}));
+    const m=map[t.rid];m.count++;m.total+=t.amount;m.ppl+=t.people;m.depts.add(t.dept);if(t._new)m._new=true;});
+  const rows=Object.values(map).map(m=>({...m,depts:[...m.depts],per:m.total/m.ppl,likes:LIKES[m.rid]||0})).sort((a,b)=>b.count-a.count);
+  const b=document.getElementById('txBody');b.innerHTML='';
+  rows.forEach(m=>{
+    const r=R(m.rid);
+    const tr=document.createElement('tr'); if(m._new) tr.className='new';
+    tr.innerHTML=`
+      <td><span class="rest-nm">${r.name}</span><br><span class="muted">${LOCATIONS[r.loc].label}</span></td>
+      <td class="num"><b>${m.count}</b>회</td>
+      <td class="num">${won(m.total)}</td>
+      <td class="num">${won(m.per)}</td>
+      <td>${m.depts.slice(0,3).map(d=>`<span class="deptt">${d}</span>`).join('')}${m.depts.length>3?` +${m.depts.length-3}`:''}</td>
+      <td class="num"><button class="thumb ${LIKES[m.rid]&&LIKES[m.rid]>0?'':''}" data-rid="${m.rid}" onclick="like(${m.rid})">👍 ${m.likes}</button></td>`;
+    b.appendChild(tr);
+  });
+}
+function like(rid){ LIKES[rid]=(LIKES[rid]||0)+1; renderDB(); toast(`👍 좋았어요 — ${R(rid).name}`); }
+function recvTx(){
+  const f=FEED[feedIdx%FEED.length];feedIdx++;
+  TX.push({...f,date:"07-22",_new:true});
+  renderDB();
+  toast(`💳 법인카드 승인 수신 — ${f.dept} · ${R(f.rid).name} · ${won(f.amount)}`);
+}
+
+switchTab('reco');
+</script>
+</body>
+</html>
