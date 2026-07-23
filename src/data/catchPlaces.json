@@ -1,0 +1,159 @@
+{
+  "updated": "2026-07-23",
+  "places": [
+    {
+      "name": "고청담 광화문 디타워점",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/gocheongdam_gwm",
+      "address": "서울 종로구 종로3길 17",
+      "placeUrl": "http://place.map.kakao.com/60258514",
+      "dx": -125,
+      "dy": 134,
+      "distM": 183
+    },
+    {
+      "name": "우육면관 광화문점",
+      "cuisine": "중식",
+      "priceHint": "저렴",
+      "url": "https://app.catchtable.co.kr/ct/shop/niuroumianguan",
+      "address": "서울 종로구 종로7길 29-14",
+      "placeUrl": "http://place.map.kakao.com/1030931779",
+      "dx": 79,
+      "dy": 251,
+      "distM": 263
+    },
+    {
+      "name": "왕비집 시청무교점",
+      "cuisine": "한식",
+      "priceHint": "보통",
+      "url": "https://app.catchtable.co.kr/ct/shop/queenhousecityhall",
+      "address": "서울 중구 무교로 19",
+      "placeUrl": "http://place.map.kakao.com/24768213",
+      "dx": -119,
+      "dy": -240,
+      "distM": 268
+    },
+    {
+      "name": "스시 키마에",
+      "cuisine": "일식",
+      "priceHint": "보통",
+      "url": "https://app.catchtable.co.kr/ct/search?keyword=%EC%8A%A4%EC%8B%9C%20%ED%82%A4%EB%A7%88%EC%97%90",
+      "address": "서울 종로구 삼봉로 81",
+      "placeUrl": "http://place.map.kakao.com/940512844",
+      "dx": 129,
+      "dy": 293,
+      "distM": 320
+    },
+    {
+      "name": "도우룸",
+      "cuisine": "양식",
+      "priceHint": "보통",
+      "url": "https://app.catchtable.co.kr/ct/shop/doughroom",
+      "address": "서울 종로구 세종대로 178",
+      "placeUrl": "http://place.map.kakao.com/741962073",
+      "dx": -224,
+      "dy": 263,
+      "distM": 345
+    },
+    {
+      "name": "규반",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/gyuban",
+      "address": "서울 중구 을지로 29",
+      "placeUrl": "http://place.map.kakao.com/929573153",
+      "dx": 61,
+      "dy": -367,
+      "distM": 372
+    },
+    {
+      "name": "울프강 스테이크하우스 광화문점",
+      "cuisine": "양식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/wolfgangssteakhouse_gwanghwa",
+      "address": "서울 중구 세종대로21길 40",
+      "placeUrl": "http://place.map.kakao.com/1760459874",
+      "dx": -395,
+      "dy": -169,
+      "distM": 430
+    },
+    {
+      "name": "오울",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/fourseasons_oul",
+      "address": "서울 종로구 새문안로 97",
+      "placeUrl": "http://place.map.kakao.com/27464311",
+      "dx": -424,
+      "dy": 97,
+      "distM": 435
+    },
+    {
+      "name": "진진만두 시청점",
+      "cuisine": "중식",
+      "priceHint": "저렴",
+      "url": "https://app.catchtable.co.kr/ct/shop/jinjinmanducityhall",
+      "address": "서울 중구 을지로 6",
+      "placeUrl": "http://place.map.kakao.com/1261257194",
+      "dx": -113,
+      "dy": -493,
+      "distM": 506
+    },
+    {
+      "name": "무궁화",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/lotteseoul_mugunghwa",
+      "address": "서울 중구 을지로 30",
+      "placeUrl": "http://place.map.kakao.com/8349008",
+      "dx": 35,
+      "dy": -512,
+      "distM": 513
+    },
+    {
+      "name": "주옥",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/joook",
+      "address": "서울 중구 소공로 119",
+      "placeUrl": "http://place.map.kakao.com/27095530",
+      "dx": -196,
+      "dy": -566,
+      "distM": 599
+    },
+    {
+      "name": "꽃, 밥에피다",
+      "cuisine": "한식",
+      "priceHint": "보통",
+      "url": "https://app.catchtable.co.kr/ct/shop/flower_blossom_on_the_rice",
+      "address": "서울 종로구 인사동16길 3-6",
+      "placeUrl": "http://place.map.kakao.com/27373320",
+      "dx": 325,
+      "dy": 611,
+      "distM": 692
+    },
+    {
+      "name": "KUT",
+      "cuisine": "한식",
+      "priceHint": "고급",
+      "url": "https://app.catchtable.co.kr/ct/shop/KUT",
+      "address": "서울 종로구 종로 96",
+      "placeUrl": "http://place.map.kakao.com/628792617",
+      "dx": 697,
+      "dy": 12,
+      "distM": 697
+    },
+    {
+      "name": "온6.5",
+      "cuisine": "한식",
+      "priceHint": "보통",
+      "url": "https://app.catchtable.co.kr/ct/shop/on65",
+      "address": "서울 종로구 북촌로1길 28",
+      "placeUrl": "http://place.map.kakao.com/1245051802",
+      "dx": 348,
+      "dy": 844,
+      "distM": 913
+    }
+  ]
+}

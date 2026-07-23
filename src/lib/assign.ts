@@ -12,6 +12,22 @@ export interface Stats {
   recent: { date: string; amount: number; account: string; card: string }[];
 }
 
+// 여러 출처(visits.json 기본값 + 서브모듈 + 업로드분)의 식당별 통계를 합산
+export function mergeStats(...sources: Record<string, Stats>[]): Record<string, Stats> {
+  const out: Record<string, Stats> = {};
+  for (const src of sources) {
+    for (const [rid, s] of Object.entries(src)) {
+      const t = (out[rid] ??= { count: 0, totalAmount: 0, lastDate: '', byAccount: {}, recent: [] });
+      t.count += s.count;
+      t.totalAmount += s.totalAmount;
+      if (s.lastDate > t.lastDate) t.lastDate = s.lastDate;
+      for (const [a, n] of Object.entries(s.byAccount)) t.byAccount[a] = (t.byAccount[a] ?? 0) + n;
+      t.recent = [...t.recent, ...s.recent].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+    }
+  }
+  return out;
+}
+
 const LUNCH_WEIGHT: Record<string, number> = {
   'mugyodong-bugeoguk': 9, cheongjinok: 8, 'seorin-nakji': 8, mijin: 6,
   'imun-seolnongtang': 6, 'gwanghwamun-gukbap': 5, gomgooksijip: 5, misien: 4,

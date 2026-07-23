@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { COMPANY_LATLNG, CUISINES, CUISINE_COLOR, latLngOf, type NewPlace, type Restaurant } from '@/lib/data';
+import { COMPANY_LATLNG, CUISINES, CUISINE_COLOR, latLngOf, type CatchPlace, type NewPlace, type Restaurant } from '@/lib/data';
 
 declare global {
   interface Window {
@@ -24,12 +24,14 @@ export default function KakaoMap({
   appKey,
   restaurants,
   newPlaces = [],
+  catchPlaces = [],
   selected,
   onSelect,
 }: {
   appKey: string;
   restaurants: Restaurant[];
   newPlaces?: NewPlace[]; // 🆕 서울시 인허가 기반 신규 오픈 (필터 ON일 때만 전달됨)
+  catchPlaces?: CatchPlace[]; // 🎯 방문 이력 없는 캐치테이블 입점 (캐치테이블 탭에서만 전달됨)
   selected: Restaurant | null;
   onSelect: (r: Restaurant) => void;
 }) {
@@ -149,10 +151,31 @@ export default function KakaoMap({
       overlay.setMap(map);
       overlaysRef.current.push(overlay);
     }
+
+    // 🎯 캐치테이블 입점 핀 — 흰 바탕 + 오렌지 테두리, 탭하면 캐치테이블 예약 페이지
+    for (const p of catchPlaces) {
+      const { lat, lng } = latLngOf(p);
+      const el = document.createElement('div');
+      el.style.cssText = 'display:flex;flex-direction:column;align-items:center;cursor:pointer';
+      el.innerHTML = `
+        <div style="font-size:10px;font-weight:600;color:#9a3412;
+          text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;white-space:nowrap">🎯 ${p.name}</div>
+        <div style="width:13px;height:13px;border-radius:50%;background:#fff;
+          border:3.5px solid #f97316;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`;
+      el.addEventListener('click', () => window.open(p.url, '_blank'));
+      const overlay = new kakao.maps.CustomOverlay({
+        position: new kakao.maps.LatLng(lat, lng),
+        content: el,
+        yAnchor: 1,
+        clickable: true,
+      });
+      overlay.setMap(map);
+      overlaysRef.current.push(overlay);
+    }
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(renderPins, [restaurants, newPlaces, selected]);
+  useEffect(renderPins, [restaurants, newPlaces, catchPlaces, selected]);
 
   const legendCuisines = CUISINES.filter((c) => restaurants.some((r) => r.cuisine === c));
 
@@ -169,6 +192,12 @@ export default function KakaoMap({
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
               <span className="inline-block h-3 w-3 rounded-full border-[3px] border-emerald-500 bg-white" />
               신규 오픈
+            </div>
+          )}
+          {catchPlaces.length > 0 && (
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-orange-700">
+              <span className="inline-block h-3 w-3 rounded-full border-[3px] border-orange-500 bg-white" />
+              미방문 입점
             </div>
           )}
           {legendCuisines.map((c) => (

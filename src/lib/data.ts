@@ -1,6 +1,8 @@
 import restaurantsJson from '@/data/restaurants.json';
+import importedJson from '@/data/importedRestaurants.json';
 import visitsJson from '@/data/visits.json';
 import newPlacesJson from '@/data/newPlaces.json';
+import catchPlacesJson from '@/data/catchPlaces.json';
 
 export type Purpose = '점심' | '저녁 회식' | '접대';
 export type Cuisine = '한식' | '일식' | '중식' | '양식' | '동남아' | '기타';
@@ -38,11 +40,15 @@ export interface Restaurant {
   google: { score: number; count: number };
   naverBooking: boolean;
   catchtable: boolean;
+  catchtableUrl?: string; // 캐치테이블 상점 직링크 (미기입 시 키워드 검색 링크로 폴백)
   address?: string; // 카카오 로컬 API 실측
   placeUrl?: string; // 카카오맵 장소 페이지
   loc?: string; // 소속 사업장(office name). 미기입은 본사
   features?: RestaurantFeatures; // 위치별 더미 식당에만 기입
   isNew?: boolean; // 최근 새로 오픈
+  aliases?: string[]; // 법인카드 전표상 가맹점명 (정산내역 매칭 키)
+  source?: 'curated' | 'import'; // 미기입은 curated. import = 정산내역에서 자동 생성
+  pending?: boolean; // 좌표/평점 미보강 스텁 — 지도 표시 제외
   // 파생 필드
   visitCount: number;
   totalAmount: number;
@@ -92,36 +98,47 @@ export const CUISINE_COLOR: Record<Cuisine, string> = {
   기타: '#64748B',
 };
 
-import type { Stats } from './assign';
+import { mergeStats, type Stats } from './assign';
 
-// 방문 통계(기본: visits.json, 업로드 시: 브라우저에서 재계산)로 식당 목록 구성
-export function buildRestaurants(stats: Record<string, Stats>): Restaurant[] {
-  return (
-    restaurantsJson.restaurants as Omit<
-      Restaurant,
-      'visitCount' | 'totalAmount' | 'lastDate' | 'byAccount' | 'recent' | 'rating' | 'reviewCount' | 'walkMin'
-    >[]
-  ).map((r) => {
+type RestaurantSeed = Omit<
+  Restaurant,
+  'visitCount' | 'totalAmount' | 'lastDate' | 'byAccount' | 'recent' | 'rating' | 'reviewCount' | 'walkMin'
+>;
+
+// 방문 통계(기본: visits.json + 서브모듈, 업로드 시: 브라우저에서 재계산)로 식당 목록 구성.
+// extra: 업로드된 정산내역에서 방금 자동 생성된 스텁 식당(아직 서브모듈 파일에 없는 것)
+export function buildRestaurants(stats: Record<string, Stats>, extra: RestaurantSeed[] = []): Restaurant[] {
+  const seeds = [
+    ...(restaurantsJson.restaurants as RestaurantSeed[]),
+    ...(importedJson.restaurants as unknown as RestaurantSeed[]),
+    ...extra,
+  ];
+  return seeds.map((r) => {
     const s = stats[r.id];
     const reviewCount = r.kakao.count + r.naver.count + r.google.count;
     return {
       ...r,
-      // 룸/주차는 실데이터 수집 전 임시 추정치. json에 features가 기입되면 그 값이 우선
-      features: r.features ?? {
-        room: r.priceTier === 3 || (r.priceTier === 2 && r.purposes.includes('접대')),
-        parking: r.priceTier === 3,
-      },
+      // 룸/주차는 실데이터 수집 전 임시 추정치. json에 features가 기입되면 그 값이 우선.
+      // 정산 자동 등록 스텁(pending)은 근거가 없으므로 추정하지 않는다.
+      features: r.features ?? (r.pending
+        ? {}
+        : {
+            room: r.priceTier === 3 || (r.priceTier === 2 && r.purposes.includes('접대')),
+            parking: r.priceTier === 3,
+          }),
       visitCount: s?.count ?? 0,
       totalAmount: s?.totalAmount ?? 0,
       lastDate: s?.lastDate ?? '',
       byAccount: s?.byAccount ?? {},
       recent: s?.recent ?? [],
       rating:
-        Math.round(
-          ((r.kakao.score * r.kakao.count + r.naver.score * r.naver.count + r.google.score * r.google.count) /
-            reviewCount) *
-            10
-        ) / 10,
+        reviewCount > 0
+          ? Math.round(
+              ((r.kakao.score * r.kakao.count + r.naver.score * r.naver.count + r.google.score * r.google.count) /
+                reviewCount) *
+                10
+            ) / 10
+          : 0,
       reviewCount,
       walkMin: Math.max(1, Math.round(r.distM / 67)),
     };
@@ -129,7 +146,7 @@ export function buildRestaurants(stats: Record<string, Stats>): Restaurant[] {
 }
 
 export const RESTAURANTS: Restaurant[] = buildRestaurants(
-  visitsJson.stats as Record<string, Stats>
+  mergeStats(visitsJson.stats as Record<string, Stats>, importedJson.stats as Record<string, Stats>)
 );
 
 // --- 신규 오픈 식당 (서울시 LOCALDATA 인허가, scripts/new-restaurants.mjs 생성) ---
@@ -159,6 +176,21 @@ export const NEW_PLACES: NewPlace[] = (newPlacesJson.places as Omit<NewPlace, 'c
 }));
 
 export const NEW_PLACES_CUTOFF = newPlacesJson.cutoff as string;
+
+// --- 캐치테이블 입점 식당 (법인카드 방문 이력 없음, 웹 실사 — scripts/catch-places.mjs 생성) ---
+export interface CatchPlace {
+  name: string;
+  cuisine: Cuisine;
+  priceHint: '저렴' | '보통' | '고급';
+  url: string; // 캐치테이블 상점 직링크 또는 키워드 검색
+  address: string;
+  placeUrl: string; // 카카오맵 장소 페이지
+  dx: number;
+  dy: number;
+  distM: number;
+}
+
+export const CATCH_PLACES: CatchPlace[] = catchPlacesJson.places as CatchPlace[];
 
 export function formatDate(ymd: string): string {
   if (ymd.length < 8) return ymd;

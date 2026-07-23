@@ -102,7 +102,7 @@ export default function ReservationForm({ restaurant: r }: { restaurant: Restaur
         </a>
         {r.catchtable ? (
           <a
-            href={`https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(r.name)}`}
+            href={r.catchtableUrl ?? `https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(r.name)}`}
             target="_blank"
             rel="noreferrer"
             className="flex-1 rounded-lg bg-orange-500/10 py-2 text-center text-xs font-bold text-orange-600"

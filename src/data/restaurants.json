@@ -171,9 +171,10 @@
         "count": 579
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 새문안로5길 31",
-      "placeUrl": "http://place.map.kakao.com/26844382"
+      "placeUrl": "http://place.map.kakao.com/26844382",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/gamagoll_gwm"
     },
     {
       "id": "R007",
@@ -230,9 +231,10 @@
         "count": 87
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 삼일대로17길 18",
-      "placeUrl": "http://place.map.kakao.com/1619274444"
+      "placeUrl": "http://place.map.kakao.com/1619274444",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/yangyeon_jongro"
     },
     {
       "id": "R009",
@@ -812,9 +814,10 @@
         "count": 530
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 세종대로 136",
-      "placeUrl": "http://place.map.kakao.com/488283694"
+      "placeUrl": "http://place.map.kakao.com/488283694",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/justbutchers_SFC"
     },
     {
       "id": "R029",
@@ -841,9 +844,10 @@
         "count": 34
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 세종대로 136",
-      "placeUrl": "http://place.map.kakao.com/2067761241"
+      "placeUrl": "http://place.map.kakao.com/2067761241",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/gowooga_gwanghwamun"
     },
     {
       "id": "R030",
@@ -899,9 +903,10 @@
         "count": 31
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 남대문로 81",
-      "placeUrl": "http://place.map.kakao.com/266557064"
+      "placeUrl": "http://place.map.kakao.com/266557064",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfZE9PR2RCazE5UDdJeHE3VkNjOWgxQT09"
     },
     {
       "id": "R032",
@@ -928,9 +933,10 @@
         "count": 416
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 종로 19",
-      "placeUrl": "http://place.map.kakao.com/1315083198"
+      "placeUrl": "http://place.map.kakao.com/1315083198",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/sushisoraghm"
     },
     {
       "id": "R033",
@@ -958,9 +964,10 @@
         "count": 148
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 종로3길 17",
-      "placeUrl": "http://place.map.kakao.com/804923494"
+      "placeUrl": "http://place.map.kakao.com/804923494",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/msh_dtower"
     },
     {
       "id": "R034",
@@ -1075,7 +1082,7 @@
         "count": 130
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 세종대로 136",
       "placeUrl": "http://place.map.kakao.com/913589012"
     },
@@ -1340,9 +1347,10 @@
         "count": 538
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 소공로 106",
-      "placeUrl": "http://place.map.kakao.com/8225675"
+      "placeUrl": "http://place.map.kakao.com/8225675",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/theninthgate"
     },
     {
       "id": "R047",
@@ -1369,9 +1377,10 @@
         "count": 311
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 소공로 106",
-      "placeUrl": "http://place.map.kakao.com/1999647180"
+      "placeUrl": "http://place.map.kakao.com/1999647180",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/rubrica"
     },
     {
       "id": "R048",
@@ -1398,9 +1407,10 @@
         "count": 160
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 소공로 106",
-      "placeUrl": "http://place.map.kakao.com/21306149"
+      "placeUrl": "http://place.map.kakao.com/21306149",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/aria"
     },
     {
       "id": "R049",
@@ -1836,9 +1846,10 @@
         "count": 425
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 서소문로 120",
-      "placeUrl": "http://place.map.kakao.com/26470073"
+      "placeUrl": "http://place.map.kakao.com/26470073",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/changgo43_cityhall"
     },
     {
       "id": "R064",
@@ -1896,9 +1907,10 @@
         "count": 11
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 세종대로 136",
-      "placeUrl": "http://place.map.kakao.com/18274189"
+      "placeUrl": "http://place.map.kakao.com/18274189",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/butcherscut_ghm"
     },
     {
       "id": "R066",
@@ -2041,9 +2053,10 @@
         "count": 307
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 새문안로 97",
-      "placeUrl": "http://place.map.kakao.com/27464311"
+      "placeUrl": "http://place.map.kakao.com/27464311",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/yuyuan"
     },
     {
       "id": "R071",
@@ -2244,9 +2257,10 @@
         "count": 348
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 새문안로 97",
-      "placeUrl": "http://place.map.kakao.com/1580609628"
+      "placeUrl": "http://place.map.kakao.com/1580609628",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/fourseasons_boccalino"
     },
     {
       "id": "R078",
@@ -2420,9 +2434,10 @@
         "count": 17
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 세종대로 178",
-      "placeUrl": "http://place.map.kakao.com/1972946304"
+      "placeUrl": "http://place.map.kakao.com/1972946304",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/taoyuen"
     },
     {
       "id": "R084",
@@ -2486,7 +2501,7 @@
       "id": "R086",
       "name": "장호왕곱창",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "곱창전골 노포",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -2515,7 +2530,7 @@
       "id": "R087",
       "name": "손가명가",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "무교동 한식 백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2545,7 +2560,7 @@
       "id": "R088",
       "name": "해봉정육 무교점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "정육식당 소고기 구이",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -2575,7 +2590,7 @@
       "id": "R089",
       "name": "알돈",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "알밥·돈부리",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2605,7 +2620,7 @@
       "id": "R090",
       "name": "원흥",
       "cuisine": "중식",
-      "desc": "42",
+      "desc": "을지로 중화요리 노포",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2635,7 +2650,7 @@
       "id": "R091",
       "name": "일일향 을지로점",
       "cuisine": "중식",
-      "desc": "42",
+      "desc": "멘보샤·어향가지",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2665,7 +2680,7 @@
       "id": "R092",
       "name": "가쯔야 무교본점",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "돈카츠 전문",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2695,7 +2710,7 @@
       "id": "R093",
       "name": "박군자 진주냉면 본점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "진주냉면·육전",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -2724,7 +2739,7 @@
       "id": "R094",
       "name": "충무집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "통영식 해산물 백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2754,7 +2769,7 @@
       "id": "R095",
       "name": "산불등심",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "연탄불 등심 구이",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -2783,7 +2798,7 @@
       "id": "R096",
       "name": "참복집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "복지리·복매운탕",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -2810,7 +2825,7 @@
       "id": "R097",
       "name": "파스타타타",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "캐주얼 파스타 전문",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -2840,7 +2855,7 @@
       "id": "R098",
       "name": "서울고기집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "삼겹살·김치찌개",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -2867,7 +2882,7 @@
       "id": "R099",
       "name": "오륙도",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "생선구이 백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2897,7 +2912,7 @@
       "id": "R100",
       "name": "우정육 시청점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "정육식당 한우 구이",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -2927,7 +2942,7 @@
       "id": "R101",
       "name": "이가네양꼬치 무교점",
       "cuisine": "중식",
-      "desc": "161",
+      "desc": "양꼬치·꿔바로우",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -2948,15 +2963,16 @@
         "count": 478
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 을지로3길 17",
-      "placeUrl": "http://place.map.kakao.com/1504382971"
+      "placeUrl": "http://place.map.kakao.com/1504382971",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/saikatsu"
     },
     {
       "id": "R102",
       "name": "우일뭉티키",
       "cuisine": "기타",
-      "desc": "42",
+      "desc": "대구식 뭉티기 생고기",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -2984,7 +3000,7 @@
       "id": "R103",
       "name": "비어할레 을지로점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "생맥주·안주 호프",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3014,7 +3030,7 @@
       "id": "R104",
       "name": "인천집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "스지탕 노포",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3044,7 +3060,7 @@
       "id": "R105",
       "name": "태성골뱅이신사 본점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "을지로 골뱅이무침",
       "priceTier": 1,
       "purposes": [
         "저녁 회식"
@@ -3073,7 +3089,7 @@
       "id": "R106",
       "name": "철철복집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "복지리 노포",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -3102,7 +3118,7 @@
       "id": "R107",
       "name": "데일리픽스 을지로",
       "cuisine": "양식",
-      "desc": "42",
+      "desc": "브런치·커피",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3132,7 +3148,7 @@
       "id": "R108",
       "name": "육미곳간",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "한우 구이·육회",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3162,7 +3178,7 @@
       "id": "R109",
       "name": "세림",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "가정식 백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3192,7 +3208,7 @@
       "id": "R110",
       "name": "초류향",
       "cuisine": "중식",
-      "desc": "42",
+      "desc": "중화요리 노포",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3222,7 +3238,7 @@
       "id": "R111",
       "name": "도장",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "이자카야",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3252,7 +3268,7 @@
       "id": "R112",
       "name": "오군",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "오겹살 숯불구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3282,7 +3298,7 @@
       "id": "R113",
       "name": "이도곰탕 을지로직영점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "곰탕·수육",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -3311,7 +3327,7 @@
       "id": "R114",
       "name": "이소식당",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "제육·백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3341,7 +3357,7 @@
       "id": "R115",
       "name": "고려보쌈",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "보쌈·족발",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -3370,7 +3386,7 @@
       "id": "R116",
       "name": "장군보쌈족발",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "족발·보쌈 전문",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -3399,7 +3415,7 @@
       "id": "R117",
       "name": "바스버거 광화문점",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "수제버거",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -3429,7 +3445,7 @@
       "id": "R118",
       "name": "오복수산참치 광화문점",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "참치회 전문",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -3450,15 +3466,16 @@
         "count": 530
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 중구 무교로 21",
-      "placeUrl": "http://place.map.kakao.com/1076353597"
+      "placeUrl": "http://place.map.kakao.com/1076353597",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/oboktuna_ghm"
     },
     {
       "id": "R119",
       "name": "영덕회식당 시청점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "물회·회덮밥",
       "priceTier": 3,
       "purposes": [
         "저녁 회식",
@@ -3488,7 +3505,7 @@
       "id": "R120",
       "name": "무교동닭도리탕",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "닭도리탕 노포",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3518,7 +3535,7 @@
       "id": "R121",
       "name": "고바우",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "쌈밥·제육볶음",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3548,7 +3565,7 @@
       "id": "R122",
       "name": "VIP참치 뉴서울호텔점",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "참치회 코스",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -3577,7 +3594,7 @@
       "id": "R123",
       "name": "브루클린더버거조인트 청계천점",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "수제버거",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -3607,7 +3624,7 @@
       "id": "R124",
       "name": "브라주카 그릴",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "브라질식 슈하스코 그릴",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -3636,7 +3653,7 @@
       "id": "R125",
       "name": "광화문해물",
       "cuisine": "기타",
-      "desc": "42",
+      "desc": "해물탕·해물찜",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3664,7 +3681,7 @@
       "id": "R126",
       "name": "상인정신",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "사시미 이자카야",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3694,7 +3711,7 @@
       "id": "R127",
       "name": "동베이",
       "cuisine": "중식",
-      "desc": "42",
+      "desc": "동북식 중화요리",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3724,7 +3741,7 @@
       "id": "R128",
       "name": "풍년옥",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "설렁탕·도가니탕",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3754,7 +3771,7 @@
       "id": "R129",
       "name": "광화문육회",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "육회·육사시미",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3784,7 +3801,7 @@
       "id": "R130",
       "name": "평안도만두집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "이북식 만두·만둣국",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -3813,7 +3830,7 @@
       "id": "R131",
       "name": "광화문뚝감",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "뚝배기 감자탕",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3843,7 +3860,7 @@
       "id": "R132",
       "name": "루뽀",
       "cuisine": "양식",
-      "desc": "42",
+      "desc": "이탈리안 비스트로",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3873,7 +3890,7 @@
       "id": "R133",
       "name": "행복한식탁",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "가정식 백반",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3903,7 +3920,7 @@
       "id": "R134",
       "name": "체부동잔치집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "서촌 잔치국수·전",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3933,7 +3950,7 @@
       "id": "R135",
       "name": "서평옥 광화문본점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "평양냉면·불고기",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -3963,7 +3980,7 @@
       "id": "R136",
       "name": "헤비스테이크 종로구청점",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "캐주얼 스테이크",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -3992,7 +4009,7 @@
       "id": "R137",
       "name": "타코챔피언 광화문점",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "타코·멕시칸",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4022,7 +4039,7 @@
       "id": "R138",
       "name": "주유별장",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "모던 한식 주점",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4052,7 +4069,7 @@
       "id": "R139",
       "name": "코끼리초밥",
       "cuisine": "일식",
-      "desc": "135",
+      "desc": "가성비 초밥",
       "priceTier": 2,
       "purposes": [
         "저녁 회식",
@@ -4082,7 +4099,7 @@
       "id": "R140",
       "name": "루드베키아",
       "cuisine": "기타",
-      "desc": "42",
+      "desc": "브런치 카페",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4112,7 +4129,7 @@
       "id": "R141",
       "name": "만도리 신라스테이 광화문",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "신라스테이 뷔페 다이닝",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -4141,7 +4158,7 @@
       "id": "R142",
       "name": "병천유황오리",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "유황오리 진흙구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식"
@@ -4170,7 +4187,7 @@
       "id": "R143",
       "name": "청진동장터순대국",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "순대국·머리고기",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -4199,7 +4216,7 @@
       "id": "R144",
       "name": "관북",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "이북식 가정식",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4229,7 +4246,7 @@
       "id": "R145",
       "name": "옛마을",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "청국장·보리밥",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4259,7 +4276,7 @@
       "id": "R146",
       "name": "청진복집",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "복국 노포",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -4288,7 +4305,7 @@
       "id": "R147",
       "name": "진중 우육면관 광화문",
       "cuisine": "중식",
-      "desc": "161",
+      "desc": "대만식 우육면",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4318,7 +4335,7 @@
       "id": "R148",
       "name": "진순대",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "순대국",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -4347,7 +4364,7 @@
       "id": "R149",
       "name": "성가백암순대",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "백암순대·순대국",
       "priceTier": 1,
       "purposes": [
         "점심"
@@ -4376,7 +4393,7 @@
       "id": "R150",
       "name": "심경희라라랜드",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "한식 포차 주점",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4406,7 +4423,7 @@
       "id": "R151",
       "name": "백부장집닭한마리",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "닭한마리·칼국수",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4436,7 +4453,7 @@
       "id": "R152",
       "name": "곰평동꼼장어",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "꼼장어 구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식"
@@ -4463,7 +4480,7 @@
       "id": "R153",
       "name": "갓포우오 종각점",
       "cuisine": "일식",
-      "desc": "135",
+      "desc": "갓포 요리·사시미",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4493,7 +4510,7 @@
       "id": "R154",
       "name": "대물섬 종로점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "해산물 요리주점",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4523,7 +4540,7 @@
       "id": "R155",
       "name": "참치공방",
       "cuisine": "일식",
-      "desc": "42",
+      "desc": "숙성 참치회",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -4552,7 +4569,7 @@
       "id": "R156",
       "name": "육미",
       "cuisine": "기타",
-      "desc": "42",
+      "desc": "숯불 고기 구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4580,7 +4597,7 @@
       "id": "R157",
       "name": "반갑다하대포",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "노포 감성 대폿집",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4610,7 +4627,7 @@
       "id": "R158",
       "name": "돈존참나무장작구이",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "참나무 장작 돼지구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4640,7 +4657,7 @@
       "id": "R159",
       "name": "강촌숯불닭갈비",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "숯불 닭갈비",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -4669,7 +4686,7 @@
       "id": "R160",
       "name": "죽마고돈",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "숙성 삼겹살 구이",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4699,7 +4716,7 @@
       "id": "R161",
       "name": "경성양꼬치",
       "cuisine": "중식",
-      "desc": "161",
+      "desc": "양꼬치·마라탕",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -4726,7 +4743,7 @@
       "id": "R162",
       "name": "명품황소곱창",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "소곱창 구이",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -4755,7 +4772,7 @@
       "id": "R163",
       "name": "와인슈타인",
       "cuisine": "양식",
-      "desc": "175",
+      "desc": "와인바·스테이크",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4785,7 +4802,7 @@
       "id": "R164",
       "name": "숙썽수산 종로본점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "숙성회·해산물",
       "priceTier": 1,
       "purposes": [
         "저녁 회식",
@@ -4815,7 +4832,7 @@
       "id": "R165",
       "name": "종로양꼬치",
       "cuisine": "중식",
-      "desc": "161",
+      "desc": "양꼬치·중식 요리",
       "priceTier": 2,
       "purposes": [
         "저녁 회식"
@@ -4844,7 +4861,7 @@
       "id": "R166",
       "name": "왕비집 종로직영점",
       "cuisine": "한식",
-      "desc": "42",
+      "desc": "소고기 구이 전문",
       "priceTier": 3,
       "purposes": [
         "접대"
@@ -4865,9 +4882,10 @@
         "count": 305
       },
       "naverBooking": false,
-      "catchtable": false,
+      "catchtable": true,
       "address": "서울 종로구 삼일대로15길 24",
-      "placeUrl": "http://place.map.kakao.com/15232887"
+      "placeUrl": "http://place.map.kakao.com/15232887",
+      "catchtableUrl": "https://app.catchtable.co.kr/ct/shop/queenhousejongro"
     }
   ],
   "_catchtable": "캐치테이블 입점 여부는 방문횟수 상위 20곳을 웹 실사(2026-07-23)로 확인. 입점: 덕후선생 광화문 D타워점(R040)·동베이 광화문점(R127)·루드베키아(R140). 나머지 46곳은 미조사(false 유지)"

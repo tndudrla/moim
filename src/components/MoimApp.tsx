@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  CATCH_PLACES,
   COMPANY,
   CUISINES,
   DIST_BANDS,
@@ -11,11 +12,13 @@ import {
   PRICE_LABEL,
   RESTAURANTS,
   buildRestaurants,
+  type CatchPlace,
   type Cuisine,
   type NewPlace,
   type Restaurant,
 } from '@/lib/data';
 import { buildStats, type Stats } from '@/lib/assign';
+import { applySettlement, type ImportedRestaurant } from '@/lib/settle';
 import { parseCardXlsx } from '@/lib/xlsx';
 import { OFFICES, TRIP_CATEGORIES, officesByCategory, type Office, type OfficeCategory } from '@/lib/offices';
 import { restaurantsForOffice } from '@/lib/officeRestaurants';
@@ -173,12 +176,23 @@ export default function MoimApp() {
 
   useEffect(() => {
     try {
+      const settle = localStorage.getItem('moim-settle');
+      if (settle) {
+        const { stats, imported } = JSON.parse(settle) as {
+          stats: Record<string, Stats>;
+          imported: ImportedRestaurant[];
+        };
+        setRestaurants(buildRestaurants(stats, imported));
+        setUploaded(true);
+        return;
+      }
       const saved = localStorage.getItem('moim-stats');
       if (saved) {
         setRestaurants(buildRestaurants(JSON.parse(saved) as Record<string, Stats>));
         setUploaded(true);
       }
     } catch {
+      localStorage.removeItem('moim-settle');
       localStorage.removeItem('moim-stats');
     }
   }, []);
@@ -202,11 +216,27 @@ export default function MoimApp() {
   const onFile = async (file: File) => {
     try {
       const txs = parseCardXlsx(await file.arrayBuffer());
-      const stats = buildStats(txs);
-      localStorage.setItem('moim-stats', JSON.stringify(stats));
-      setRestaurants(buildRestaurants(stats));
-      setUploaded(true);
-      alert(`법인카드 내역 ${txs.length}건을 반영했어요.\n(식당 배정은 시연용 더미 매핑)`);
+      if (txs.some((t) => t.merchant)) {
+        // 미정산내역 형식: 가맹점명 실매칭 + 미등록 가맹점은 스텁으로 DB 자동 보강
+        const res = applySettlement(txs);
+        localStorage.setItem('moim-settle', JSON.stringify({ stats: res.stats, imported: res.imported }));
+        localStorage.removeItem('moim-stats');
+        setRestaurants(buildRestaurants(res.stats, res.imported));
+        setUploaded(true);
+        alert(
+          `정산내역 ${txs.length}건을 반영했어요.\n` +
+            `기존 식당 매칭 ${res.matchedTx}건 · 신규 등록 ${res.imported.length}곳(거래 ${res.newTx}건)\n` +
+            `신규 등록 식당은 위치 확인 전이라 지도에는 표시되지 않아요.`
+        );
+      } else {
+        // SAP 형식(가맹점명 없음): 시연용 더미 배정
+        const stats = buildStats(txs);
+        localStorage.setItem('moim-stats', JSON.stringify(stats));
+        localStorage.removeItem('moim-settle');
+        setRestaurants(buildRestaurants(stats));
+        setUploaded(true);
+        alert(`법인카드 내역 ${txs.length}건을 반영했어요.\n(식당 배정은 시연용 더미 매핑)`);
+      }
     } catch (e) {
       alert(`엑셀을 읽지 못했어요: ${e instanceof Error ? e.message : e}`);
     }
@@ -214,6 +244,7 @@ export default function MoimApp() {
 
   const resetData = () => {
     localStorage.removeItem('moim-stats');
+    localStorage.removeItem('moim-settle');
     setRestaurants(RESTAURANTS);
     setUploaded(false);
   };
@@ -266,6 +297,18 @@ export default function MoimApp() {
       sort === 'distance' ? a.distM - b.distM : b.opened.localeCompare(a.opened)
     );
   }, [mode, officeName, dist, cuisines, sort]);
+
+  // 🎯 캐치테이블 탭 + 본사일 때 방문 이력 없는 입점 식당 (웹 실사, 거리·음식·김영란법 필터 적용)
+  const catchPlaces = useMemo(() => {
+    if (mode !== 'catch' || officeName !== HQ_OFFICE) return [];
+    const list = CATCH_PLACES.filter((p) => {
+      if (dist && p.distM > dist) return false;
+      if (cuisines.size > 0 && !cuisines.has(p.cuisine)) return false;
+      if (antiGraft && p.priceHint === '고급') return false;
+      return true;
+    });
+    return [...list].sort((a, b) => a.distM - b.distM);
+  }, [mode, officeName, dist, cuisines, antiGraft]);
 
   const toggleCuisine = (c: Cuisine) => {
     setCuisines((prev) => {
@@ -521,7 +564,7 @@ export default function MoimApp() {
       {/* 정렬 · 결과 수 */}
       <div className="flex items-center justify-between px-4 py-3">
         <p className="flex items-center gap-1.5 text-sm text-slate-500">
-          <b className="text-slate-900">{results.length + newPlaces.length}</b>곳
+          <b className="text-slate-900">{results.length + newPlaces.length + catchPlaces.length}</b>곳
           {officeName === HQ_OFFICE ? (
             <>
               <input
@@ -572,14 +615,15 @@ export default function MoimApp() {
         KAKAO_KEY && officeName === HQ_OFFICE ? (
           <KakaoMap
             appKey={KAKAO_KEY}
-            restaurants={results}
+            restaurants={results.filter((r) => !r.pending)}
             newPlaces={newPlaces}
+            catchPlaces={catchPlaces}
             selected={selected}
             onSelect={setSelected}
           />
         ) : (
           <MapView
-            restaurants={results}
+            restaurants={results.filter((r) => !r.pending)}
             selected={selected}
             onSelect={setSelected}
             centerBadge={officeName === HQ_OFFICE ? 'SK' : selectedOffice.flag}
@@ -604,7 +648,15 @@ export default function MoimApp() {
           {newPlaces.map((p) => (
             <NewPlaceCard key={`${p.name}-${p.address}`} place={p} />
           ))}
-          {results.length === 0 && newPlaces.length === 0 && (
+          {catchPlaces.length > 0 && (
+            <li className="pt-1 text-center text-[11px] text-slate-400">
+              🎯 아직 안 가본 캐치테이블 입점 식당 — 예약이 어려운 곳은 빈자리 감시로 잡아드려요
+            </li>
+          )}
+          {catchPlaces.map((p) => (
+            <CatchPlaceCard key={p.name} place={p} />
+          ))}
+          {results.length === 0 && newPlaces.length === 0 && catchPlaces.length === 0 && (
             <li className="rounded-xl bg-[#fffdf8] p-8 text-center text-sm text-slate-400">
               {mode === 'catch'
                 ? '조건에 맞는 캐치테이블 입점 식당이 없어요. 필터를 조정해 보세요.'
@@ -640,6 +692,35 @@ function NewPlaceCard({ place }: { place: NewPlace }) {
         <p className="mt-1 text-xs text-slate-600">
           {place.cuisine} · 도보 {Math.max(1, Math.round(place.distM / 67))}분 ({place.distM}m) · 개업{' '}
           {place.opened.replaceAll('-', '.')}
+        </p>
+        <p className="mt-0.5 truncate text-[11px] text-slate-400">{place.address}</p>
+      </button>
+    </li>
+  );
+}
+
+// 캐치테이블 입점 식당 카드 — 방문 이력이 없어 상세시트 대신 캐치테이블 예약 페이지로 연결
+function CatchPlaceCard({ place }: { place: CatchPlace }) {
+  return (
+    <li>
+      <button
+        onClick={() => window.open(place.url, '_blank')}
+        className="w-full rounded-xl border border-orange-200 bg-[#fffdf8] p-4 text-left shadow-sm"
+      >
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 rounded bg-orange-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
+            🎯 캐치테이블
+          </span>
+          <b className="truncate text-slate-900">{place.name}</b>
+          {place.priceHint === '고급' && (
+            <span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 text-[11px] font-bold text-white">
+              고급
+            </span>
+          )}
+        </div>
+        <p className="mt-1 text-xs text-slate-600">
+          {place.cuisine} · 도보 {Math.max(1, Math.round(place.distM / 67))}분 ({place.distM}m) · 탭하면
+          바로 예약
         </p>
         <p className="mt-0.5 truncate text-[11px] text-slate-400">{place.address}</p>
       </button>

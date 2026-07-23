@@ -46,16 +46,29 @@ export default function RestaurantCard({
                 예약 가능
               </span>
             )}
+            {r.pending && (
+              <span className="shrink-0 rounded bg-sky-500 px-1.5 py-0.5 text-[11px] font-bold text-white">
+                💳 정산 신규
+              </span>
+            )}
           </div>
           <p className="mt-0.5 truncate text-xs text-slate-500">{r.desc}</p>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
-            <span className="font-semibold text-amber-500">
-              ★ {r.rating.toFixed(1)}
-              <span className="ml-0.5 font-normal text-slate-400">({r.reviewCount.toLocaleString()})</span>
-            </span>
-            <span>
-              {r.distM}m · 도보 {r.walkMin}분
-            </span>
+            {r.reviewCount > 0 ? (
+              <span className="font-semibold text-amber-500">
+                ★ {r.rating.toFixed(1)}
+                <span className="ml-0.5 font-normal text-slate-400">({r.reviewCount.toLocaleString()})</span>
+              </span>
+            ) : (
+              <span className="text-slate-400">리뷰 없음</span>
+            )}
+            {r.pending ? (
+              <span className="text-slate-400">📍 위치 확인 전</span>
+            ) : (
+              <span>
+                {r.distM}m · 도보 {r.walkMin}분
+              </span>
+            )}
             <span>{PRICE_LABEL[r.priceTier]}</span>
             {r.features?.room && <span className="text-slate-500">🚪 룸</span>}
             {r.features?.parking && <span className="text-slate-500">🅿️ 주차</span>}
