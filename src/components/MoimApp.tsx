@@ -39,6 +39,13 @@ const SORT_LABEL: Record<Sort, string> = {
 type Kind = 'office' | 'trip'; // 사업장 vs 출장지
 type Style = 'all' | 'exec' | 'casual'; // 식사 성격
 type Gender = 'all' | 'm' | 'f';
+type Mode = 'card' | 'new' | 'catch'; // 서비스 3축: 법인카드 검증 맛집 / 새로 오픈 / 캐치테이블 예약
+
+const MODE_META: Record<Mode, { icon: string; label: string; active: string }> = {
+  card: { icon: '💳', label: '법인카드', active: 'border-rose-600 bg-rose-600 text-white shadow' },
+  new: { icon: '🆕', label: '새로 오픈', active: 'border-emerald-500 bg-emerald-500 text-white shadow' },
+  catch: { icon: '🎯', label: '캐치테이블', active: 'border-orange-500 bg-orange-500 text-white shadow' },
+};
 
 const STYLE_ACCOUNT: Record<Style, string | null> = {
   all: null,
@@ -135,7 +142,7 @@ export default function MoimApp() {
   const [cuisines, setCuisines] = useState<Set<Cuisine>>(new Set());
   const [antiGraft, setAntiGraft] = useState(false);
   const [halalOnly, setHalalOnly] = useState(false);
-  const [newOnly, setNewOnly] = useState(false);
+  const [mode, setMode] = useState<Mode>('card');
   const [roomOnly, setRoomOnly] = useState(false);
   const [parkOnly, setParkOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -151,9 +158,12 @@ export default function MoimApp() {
   const culture = cultureOf(selectedOffice.country);
   const isOverseas = !!culture;
 
-  // ?view=map 딥링크 (서버 렌더는 항상 list라 mount 후 반영)
+  // ?view=map / ?mode=new|catch 딥링크 (서버 렌더는 기본값이라 mount 후 반영)
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('view') === 'map') setView('map');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'map') setView('map');
+    const m = params.get('mode');
+    if (m === 'new' || m === 'catch') setMode(m);
   }, []);
 
   // 엑셀 업로드로 교체된 방문 통계 (localStorage 영속화, 본사 전용)
@@ -183,6 +193,11 @@ export default function MoimApp() {
     setHalalOnly(cultureOf(selectedOffice.country)?.halal ?? false);
     setShowCulture(false);
   }, [selectedOffice]);
+
+  // 캐치테이블은 국내 전용 — 해외 위치로 바꾸면 법인카드 탭으로 복귀
+  useEffect(() => {
+    if (isOverseas && mode === 'catch') setMode('card');
+  }, [isOverseas, mode]);
 
   const onFile = async (file: File) => {
     try {
@@ -219,7 +234,8 @@ export default function MoimApp() {
       if (cuisines.size > 0 && !cuisines.has(r.cuisine)) return false;
       if (antiGraft && r.priceTier === 3) return false;
       if (halalOnly && !r.features?.halal) return false;
-      if (newOnly && !r.isNew) return false;
+      if (mode === 'new' && !r.isNew) return false;
+      if (mode === 'catch' && !r.catchtable) return false;
       if (roomOnly && !r.features?.room) return false;
       if (parkOnly && !r.features?.parking) return false;
       return true;
@@ -236,11 +252,11 @@ export default function MoimApp() {
       return a.distM - b.distM;
     });
     return list;
-  }, [sourceList, style, age, gender, budget, dist, cuisines, antiGraft, halalOnly, newOnly, roomOnly, parkOnly, sort, boostActive]);
+  }, [sourceList, style, age, gender, budget, dist, cuisines, antiGraft, halalOnly, mode, roomOnly, parkOnly, sort, boostActive]);
 
-  // 🆕 필터 ON + 본사일 때 서울시 인허가 기반 신규 오픈 식당 (거리·음식종류 필터 적용)
+  // 🆕 새로 오픈 탭 + 본사일 때 서울시 인허가 기반 신규 오픈 식당 (거리·음식종류 필터 적용)
   const newPlaces = useMemo(() => {
-    if (!newOnly || officeName !== HQ_OFFICE) return [];
+    if (mode !== 'new' || officeName !== HQ_OFFICE) return [];
     const list = NEW_PLACES.filter((p) => {
       if (dist && p.distM > dist) return false;
       if (cuisines.size > 0 && !cuisines.has(p.cuisine)) return false;
@@ -249,7 +265,7 @@ export default function MoimApp() {
     return [...list].sort((a, b) =>
       sort === 'distance' ? a.distM - b.distM : b.opened.localeCompare(a.opened)
     );
-  }, [newOnly, officeName, dist, cuisines, sort]);
+  }, [mode, officeName, dist, cuisines, sort]);
 
   const toggleCuisine = (c: Cuisine) => {
     setCuisines((prev) => {
@@ -378,16 +394,32 @@ export default function MoimApp() {
           />
         </div>
 
+        {/* 서비스 3축 모드 버튼 */}
+        <div className="flex gap-2 px-4 pb-2">
+          {(Object.keys(MODE_META) as Mode[]).map((m) => {
+            const disabled = m === 'catch' && isOverseas;
+            return (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                disabled={disabled}
+                title={disabled ? '캐치테이블은 국내 전용이에요' : undefined}
+                className={`flex-1 rounded-xl border py-2.5 text-sm font-bold transition-colors ${
+                  mode === m
+                    ? MODE_META[m].active
+                    : disabled
+                      ? 'border-slate-200 bg-slate-50 text-slate-300'
+                      : 'border-slate-300 bg-[#fffdf8] text-slate-600'
+                }`}
+              >
+                {MODE_META[m].icon} {MODE_META[m].label}
+              </button>
+            );
+          })}
+        </div>
+
         {/* 빠른 토글 + 상세 필터 열기 */}
         <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto px-4 pb-2">
-          <button
-            onClick={() => setNewOnly((v) => !v)}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              newOnly ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-300 bg-[#fffdf8] text-slate-600'
-            }`}
-          >
-            🆕 새로 오픈
-          </button>
           <button
             onClick={() => setAntiGraft((v) => !v)}
             className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium ${
@@ -418,14 +450,20 @@ export default function MoimApp() {
           </button>
         </div>
 
-        {/* 활성 토글 필터 기준 안내 */}
-        {(newOnly || antiGraft) && (
+        {/* 활성 모드·필터 기준 안내 */}
+        {(mode !== 'card' || antiGraft) && (
           <div className="space-y-1 px-4 pb-2">
-            {newOnly && (
+            {mode === 'new' && (
               <p className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] leading-relaxed text-emerald-800">
                 <b>🆕 새로 오픈</b> — 서울시 일반음식점 인허가 데이터 기준, 최근 1개월(
                 {NEW_PLACES_CUTOFF.replaceAll('-', '.')} 이후) 개업 신고 + 영업 중 + 반경 1.5km 이내
                 {officeName !== HQ_OFFICE && ' (본사에서만 제공)'}
+              </p>
+            )}
+            {mode === 'catch' && (
+              <p className="rounded-lg bg-orange-50 px-2.5 py-1.5 text-[11px] leading-relaxed text-orange-800">
+                <b>🎯 캐치테이블</b> — 입점 식당만 모아 보여드려요. 자리가 없으면 식당 상세 → 예약의{' '}
+                <b>🎯 버튼</b>으로 내 PC의 Claude가 빈자리를 감시하다 자동 예약해요.
               </p>
             )}
             {antiGraft && (
@@ -491,8 +529,8 @@ export default function MoimApp() {
         )}
       </header>
 
-      {/* 빈자리 감시 기능 소개 — 캐치테이블은 국내 전용이라 해외 위치에서는 숨김 */}
-      {!isOverseas && <SniperBanner />}
+      {/* 빈자리 감시 기능 소개 — 캐치테이블 탭에서만 (해외 위치에서는 탭 자체가 비활성) */}
+      {mode === 'catch' && !isOverseas && <SniperBanner />}
 
       {/* 정렬 · 결과 수 */}
       <div className="flex items-center justify-between px-4 py-3">
@@ -582,7 +620,11 @@ export default function MoimApp() {
           ))}
           {results.length === 0 && newPlaces.length === 0 && (
             <li className="rounded-xl bg-[#fffdf8] p-8 text-center text-sm text-slate-400">
-              조건에 맞는 식당이 없어요. 필터를 조정해 보세요.
+              {mode === 'catch'
+                ? '조건에 맞는 캐치테이블 입점 식당이 없어요. 필터를 조정해 보세요.'
+                : mode === 'new'
+                  ? '조건에 맞는 신규 오픈 식당이 없어요. 필터를 조정해 보세요.'
+                  : '조건에 맞는 식당이 없어요. 필터를 조정해 보세요.'}
             </li>
           )}
         </ul>
