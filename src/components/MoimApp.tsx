@@ -17,7 +17,7 @@ import {
 } from '@/lib/data';
 import { buildStats, type Stats } from '@/lib/assign';
 import { parseCardXlsx } from '@/lib/xlsx';
-import { OFFICES, officesByCategory, type Office, type OfficeCategory } from '@/lib/offices';
+import { OFFICES, TRIP_CATEGORIES, officesByCategory, type Office, type OfficeCategory } from '@/lib/offices';
 import { restaurantsForOffice } from '@/lib/officeRestaurants';
 import { cultureOf } from '@/lib/culture';
 import RestaurantCard from './RestaurantCard';
@@ -36,7 +36,7 @@ const SORT_LABEL: Record<Sort, string> = {
   distance: '가까운순',
 };
 
-type Kind = 'office' | 'trip'; // 사업장 vs 출장지
+type Kind = 'office' | 'trip'; // 국내 사업장 vs 해외 출장지
 type Style = 'all' | 'exec' | 'casual'; // 식사 성격
 type Gender = 'all' | 'm' | 'f';
 type Mode = 'card' | 'new' | 'catch'; // 서비스 3축: 법인카드 검증 맛집 / 새로 오픈 / 캐치테이블 예약
@@ -56,10 +56,10 @@ const STYLE_ACCOUNT: Record<Style, string | null> = {
 const AGES = [20, 30, 40, 50] as const;
 const AGE_LABEL: Record<number, string> = { 20: '20대', 30: '30대', 40: '40대', 50: '50대+' };
 
-// 사업장(회사) 카테고리 = 출장지를 제외한 전부
-const OFFICE_CATS: OfficeCategory[] = ['본사', '해외법인', '국내 도시가스 자회사', '발전·집단에너지 자회사', '수소 자회사'];
+// 국내 사업장 = 본사 + 국내 자회사, 해외 출장지 = 해외법인
+const OFFICE_CATS: OfficeCategory[] = ['본사', '국내 도시가스 자회사', '발전·집단에너지 자회사', '수소 자회사'];
 const groups = officesByCategory();
-const TRIP_OFFICES = groups['출장지'] ?? [];
+const TRIP_OFFICES = TRIP_CATEGORIES.flatMap((cat) => groups[cat] ?? []);
 const FIRST_TRIP = TRIP_OFFICES[0]?.name ?? HQ_OFFICE;
 
 // --- 추천 부스트 (식사성격/연령/성별로 정렬 우대. features 미기입(본사 실데이터)은 0점 처리) ---
@@ -183,7 +183,7 @@ export default function MoimApp() {
     }
   }, []);
 
-  // 위치 종류(사업장/출장지) 전환 시 해당 종류의 첫 위치로
+  // 위치 종류(국내 사업장/해외 출장지) 전환 시 해당 종류의 첫 위치로
   useEffect(() => {
     setOfficeName(kind === 'trip' ? FIRST_TRIP : HQ_OFFICE);
   }, [kind]);
@@ -315,15 +315,15 @@ export default function MoimApp() {
           </div>
         </div>
 
-        {/* 위치: 사업장 / 출장지 구분 */}
+        {/* 위치: 국내 사업장 / 해외 출장지 구분 */}
         <div className="px-4 pb-2">
           <div className="mb-2">
             <Seg<Kind>
               value={kind}
               onChange={setKind}
               options={[
-                { v: 'office', label: '🏢 사업장' },
-                { v: 'trip', label: '✈️ 출장지' },
+                { v: 'office', label: '🏢 국내 사업장' },
+                { v: 'trip', label: '✈️ 해외 출장지' },
               ]}
             />
           </div>
@@ -332,22 +332,16 @@ export default function MoimApp() {
             onChange={(e) => setOfficeName(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-[#fffdf8] px-3 py-2 text-sm font-medium text-slate-800"
           >
-            {kind === 'trip'
-              ? TRIP_OFFICES.map((o) => (
+            {(kind === 'trip' ? TRIP_CATEGORIES : OFFICE_CATS).map((cat) => (
+              <optgroup key={cat} label={cat}>
+                {groups[cat]?.map((o) => (
                   <option key={o.name} value={o.name}>
-                    {o.flag} {o.city}
+                    {o.flag} {o.name}
+                    {cat !== '본사' ? ` · ${o.city}` : ''}
                   </option>
-                ))
-              : OFFICE_CATS.map((cat) => (
-                  <optgroup key={cat} label={cat}>
-                    {groups[cat]?.map((o) => (
-                      <option key={o.name} value={o.name}>
-                        {o.flag} {o.name}
-                        {cat !== '본사' ? ` · ${o.city}` : ''}
-                      </option>
-                    ))}
-                  </optgroup>
                 ))}
+              </optgroup>
+            ))}
           </select>
           <p className="mt-1 text-[11px] text-slate-400">{selectedOffice.address}</p>
 

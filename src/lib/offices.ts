@@ -3,7 +3,6 @@ import officesJson from '@/data/offices.json';
 export type OfficeCategory =
   | '본사'
   | '해외법인'
-  | '출장지'
   | '국내 도시가스 자회사'
   | '발전·집단에너지 자회사'
   | '수소 자회사';
@@ -25,11 +24,13 @@ export const OFFICES: Office[] = officesJson.offices as Office[];
 export const OFFICE_CATEGORIES: OfficeCategory[] = [
   '본사',
   '해외법인',
-  '출장지',
   '국내 도시가스 자회사',
   '발전·집단에너지 자회사',
   '수소 자회사',
 ];
+
+// 해외 출장지 = 해외법인
+export const TRIP_CATEGORIES: OfficeCategory[] = ['해외법인'];
 
 export const HQ_OFFICE_NAME = 'SK서린빌딩';
 

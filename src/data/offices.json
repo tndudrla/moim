@@ -101,61 +101,6 @@
       "tag": null
     },
     {
-      "category": "출장지",
-      "name": "부산 출장",
-      "country": "대한민국",
-      "flag": "🇰🇷",
-      "city": "부산",
-      "address": "부산 해운대구 센텀 일대 (자주 가는 출장지)",
-      "lat": 35.1697,
-      "lng": 129.1306,
-      "tag": null
-    },
-    {
-      "category": "출장지",
-      "name": "두바이 출장",
-      "country": "UAE",
-      "flag": "🇦🇪",
-      "city": "두바이",
-      "address": "Dubai, United Arab Emirates (자주 가는 출장지)",
-      "lat": 25.2048,
-      "lng": 55.2708,
-      "tag": null
-    },
-    {
-      "category": "출장지",
-      "name": "하노이 출장",
-      "country": "베트남",
-      "flag": "🇻🇳",
-      "city": "하노이",
-      "address": "Hanoi, Vietnam (자주 가는 출장지)",
-      "lat": 21.0278,
-      "lng": 105.8342,
-      "tag": null
-    },
-    {
-      "category": "출장지",
-      "name": "프랑크푸르트 출장",
-      "country": "독일",
-      "flag": "🇩🇪",
-      "city": "프랑크푸르트",
-      "address": "Frankfurt am Main, Germany (자주 가는 출장지)",
-      "lat": 50.1109,
-      "lng": 8.6821,
-      "tag": null
-    },
-    {
-      "category": "출장지",
-      "name": "오사카 출장",
-      "country": "일본",
-      "flag": "🇯🇵",
-      "city": "오사카",
-      "address": "Osaka, Japan (자주 가는 출장지)",
-      "lat": 34.6937,
-      "lng": 135.5023,
-      "tag": null
-    },
-    {
       "category": "국내 도시가스 자회사",
       "name": "코원에너지서비스㈜",
       "country": "대한민국",
