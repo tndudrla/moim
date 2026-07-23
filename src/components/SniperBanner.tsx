@@ -80,9 +80,10 @@ export default function SniperBanner() {
                 직접 예약을 시도해요.
               </li>
               <li>
-                자리가 없으면 <b className="text-violet-700">🎯 빈자리 감시</b>를 열고{' '}
-                <span className="text-slate-500">“8월 2일 밍글스 저녁 2명 빈자리 감시해줘”</span>
-                처럼 입력해요.
+                자리가 없으면 <b className="text-violet-700">🎯 빈자리 감시</b>를 열고
+                인원·날짜·시간을 고르거나,{' '}
+                <span className="text-slate-500">“온지음 5월 토요일 저녁 2인 빈자리 나오면 예약해줘”</span>
+                처럼 자연어로 입력해요.
               </li>
               <li>
                 <b>내 PC</b>의 Claude가 취소표를 감시하다가 자리가 나면 예약해요. 결제 단계는 반드시
