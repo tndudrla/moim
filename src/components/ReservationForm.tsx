@@ -34,6 +34,18 @@ export default function ReservationForm({
     googleUrl ??
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address ? `${name} ${address}` : name)}`;
 
+  // 캐치테이블 실제 번들(ct_main/bootstrap.js)에서 확인한 비공식 쿼리 파라미터.
+  // 상점 상세 페이지(HostDatePersonSelectorSlot)가 date(YYMMDD)·time(HHmm)·personCount를
+  // URL에서 읽어 예약 인원·날짜 선택기를 그대로 채운다. 공식 문서는 없으므로 배포로 깨질 수 있음.
+  const withCatchtableParams = (base: string) => {
+    const params = new URLSearchParams({
+      date: date.replace(/-/g, '').slice(2),
+      time: time.replace(':', ''),
+      personCount: String(people),
+    });
+    return `${base}${base.includes('?') ? '&' : '?'}${params.toString()}`;
+  };
+
   if (!catchtable) {
     return (
       <div className="mt-3 rounded-xl border border-slate-200 p-3">
@@ -56,8 +68,9 @@ export default function ReservationForm({
     );
   }
 
-  const catchHref =
-    catchtableUrl ?? `https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(name)}`;
+  const catchHref = withCatchtableParams(
+    catchtableUrl ?? `https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(name)}`,
+  );
 
   return (
     <div className="mt-3 rounded-xl border border-slate-200 p-3">
