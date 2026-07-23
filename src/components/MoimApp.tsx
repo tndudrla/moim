@@ -23,7 +23,7 @@ import { buildStats, type Stats } from '@/lib/assign';
 import { applySettlement, type ImportedRestaurant } from '@/lib/settle';
 import { parseCardXlsx } from '@/lib/xlsx';
 import { OFFICES, TRIP_CATEGORIES, officesByCategory, type Office, type OfficeCategory } from '@/lib/offices';
-import { restaurantsForOffice } from '@/lib/officeRestaurants';
+import { officeLatLng, restaurantsForOffice } from '@/lib/officeRestaurants';
 import { cultureOf } from '@/lib/culture';
 import RestaurantCard from './RestaurantCard';
 import ReservationForm from './ReservationForm';
@@ -72,6 +72,14 @@ const AGE_LABEL: Record<number, string> = { 20: '20대', 30: '30대', 40: '40대
 
 // 국내 사업장 = 본사 + 국내 자회사, 해외 출장지 = 해외법인
 const OFFICE_CATS: OfficeCategory[] = ['본사', '국내 도시가스 자회사', '발전·집단에너지 자회사', '수소 자회사'];
+// 카테고리 세그먼트용 짧은 라벨 (콤보박스에 전 회사를 나열하면 너무 길어서 2단 선택)
+const CAT_SHORT: Record<OfficeCategory, string> = {
+  본사: '🏢 본사',
+  '국내 도시가스 자회사': '🔥 도시가스',
+  '발전·집단에너지 자회사': '⚡ 발전·집단E',
+  '수소 자회사': '💧 수소',
+  해외법인: '✈️ 해외법인',
+};
 const groups = officesByCategory();
 const TRIP_OFFICES = TRIP_CATEGORIES.flatMap((cat) => groups[cat] ?? []);
 const FIRST_TRIP = TRIP_OFFICES[0]?.name ?? HQ_OFFICE;
@@ -171,6 +179,7 @@ export default function MoimApp() {
   );
   const culture = cultureOf(selectedOffice.country);
   const isOverseas = !!culture;
+  const mapCenter = officeLatLng(officeName); // 실좌표 있는 국내 위치만 카카오맵 실지도
 
   // ?view=map / ?mode=new|catch / ?office=<이름> 딥링크 (서버 렌더는 기본값이라 mount 후 반영)
   useEffect(() => {
@@ -401,22 +410,58 @@ export default function MoimApp() {
               ]}
             />
           </div>
-          <select
-            value={officeName}
-            onChange={(e) => setOfficeName(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-[#fffdf8] px-3 py-2 text-sm font-medium text-slate-800"
-          >
-            {(kind === 'trip' ? TRIP_CATEGORIES : OFFICE_CATS).map((cat) => (
-              <optgroup key={cat} label={cat}>
-                {groups[cat]?.map((o) => (
-                  <option key={o.name} value={o.name}>
-                    {o.flag} {o.name}
-                    {cat !== '본사' ? ` · ${o.city}` : ''}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+          {kind === 'office' ? (
+            <>
+              {/* 2단 선택: 카테고리 먼저 → 해당 자회사만 콤보박스에 (전 회사 나열 방지) */}
+              <div className="mb-2 flex rounded-lg bg-slate-100 p-1 text-xs font-medium">
+                {OFFICE_CATS.map((cat) => {
+                  const active = selectedOffice.category === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() =>
+                        setOfficeName(cat === '본사' ? HQ_OFFICE : (groups[cat]?.[0]?.name ?? HQ_OFFICE))
+                      }
+                      className={`flex-1 rounded-md px-1 py-1.5 transition-colors ${
+                        active ? 'bg-[#fffdf8] font-bold text-slate-900 shadow' : 'text-slate-500'
+                      }`}
+                    >
+                      {CAT_SHORT[cat]}
+                    </button>
+                  );
+                })}
+              </div>
+              {(groups[selectedOffice.category]?.length ?? 0) > 1 && (
+                <select
+                  value={officeName}
+                  onChange={(e) => setOfficeName(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 bg-[#fffdf8] px-3 py-2 text-sm font-medium text-slate-800"
+                >
+                  {groups[selectedOffice.category]?.map((o) => (
+                    <option key={o.name} value={o.name}>
+                      {o.flag} {o.name} · {o.city}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </>
+          ) : (
+            <select
+              value={officeName}
+              onChange={(e) => setOfficeName(e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-[#fffdf8] px-3 py-2 text-sm font-medium text-slate-800"
+            >
+              {TRIP_CATEGORIES.map((cat) => (
+                <optgroup key={cat} label={cat}>
+                  {groups[cat]?.map((o) => (
+                    <option key={o.name} value={o.name}>
+                      {o.flag} {o.name} · {o.city}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          )}
           <p className="mt-1 text-[11px] text-slate-400">{selectedOffice.address}</p>
 
           {isOverseas && culture && (
@@ -637,9 +682,12 @@ export default function MoimApp() {
       {/* 본문 — 카카오맵은 실좌표가 있는 본사만, 그 외 위치는 SVG 목업 지도 */}
       {view === 'map' ? (
         <div>
-          {KAKAO_KEY && officeName === HQ_OFFICE ? (
+          {KAKAO_KEY && !isOverseas && mapCenter ? (
             <KakaoMap
+              key={officeName}
               appKey={KAKAO_KEY}
+              center={mapCenter}
+              centerLabel={officeName === HQ_OFFICE ? 'SK서린빌딩' : officeName}
               restaurants={results.filter((r) => !r.pending)}
               newPlaces={newPlaces}
               catchPlaces={catchPlaces}
@@ -760,7 +808,7 @@ function MapListStrip({
   if (restaurants.length === 0) return null;
 
   return (
-    <ul className="scrollbar-hide mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
+    <ul className="scrollbar-hide mt-2 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-2 pt-1">
       {restaurants.map((r, i) => {
         const isSel = selected?.id === r.id;
         return (
@@ -771,32 +819,39 @@ function MapListStrip({
               else itemRefs.current.delete(r.id);
             }}
             onClick={() => onSelect(r)}
-            className={`w-40 shrink-0 cursor-pointer rounded-xl border p-2.5 shadow-md transition-colors ${
-              isSel ? 'border-rose-500 bg-rose-50' : 'border-slate-200 bg-[#fffdf8]/95'
+            style={{ borderLeftColor: CUISINE_COLOR[r.cuisine] }}
+            className={`w-52 shrink-0 snap-center cursor-pointer rounded-xl border border-l-4 p-3 shadow-md transition-all ${
+              isSel
+                ? 'border-rose-500 bg-rose-50 shadow-lg ring-1 ring-rose-400'
+                : 'border-slate-200 bg-white'
             }`}
           >
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {rankBase && (
                 <span
-                  className={`shrink-0 rounded px-1 text-[10px] font-black ${
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px] font-black ${
                     i < 3 ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-500'
                   }`}
                 >
                   {i + 1}
                 </span>
               )}
-              <b className="truncate text-xs text-slate-900">{r.name}</b>
+              <b className="min-w-0 flex-1 truncate text-sm text-slate-900">{r.name}</b>
+              {r.visitCount > 0 && (
+                <span className="shrink-0 rounded-md bg-[#3d0b12] px-1.5 py-0.5 text-[11px] font-black text-white">
+                  {r.visitCount}회
+                </span>
+              )}
             </div>
-            <p className="mt-1 flex items-center gap-1.5 text-[10px] text-slate-500">
-              <span
-                className="rounded px-1 font-bold text-white"
-                style={{ backgroundColor: CUISINE_COLOR[r.cuisine] }}
-              >
+            <p className="mt-1.5 flex items-center gap-2 text-[11px] font-medium text-slate-600">
+              <span className="font-bold" style={{ color: CUISINE_COLOR[r.cuisine] }}>
                 {r.cuisine}
               </span>
-              <span className="font-semibold text-amber-500">★ {r.rating.toFixed(1)}</span>
+              {r.reviewCount > 0 && (
+                <span className="font-semibold text-amber-500">★ {r.rating.toFixed(1)}</span>
+              )}
               <span>{travelLabel(r.distM)}</span>
-              {r.visitCount > 0 && <span className="font-bold text-slate-700">{r.visitCount}회</span>}
+              <span className="text-slate-400">{PRICE_LABEL[r.priceTier].replace('원대', '')}</span>
             </p>
           </li>
         );

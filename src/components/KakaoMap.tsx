@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { COMPANY_LATLNG, CUISINES, CUISINE_COLOR, latLngOf, type CatchPlace, type NewPlace, type Restaurant } from '@/lib/data';
+import { CUISINES, CUISINE_COLOR, type CatchPlace, type NewPlace, type Restaurant } from '@/lib/data';
 
 declare global {
   interface Window {
@@ -22,6 +22,8 @@ const SDK_ID = 'kakao-map-sdk';
 
 export default function KakaoMap({
   appKey,
+  center,
+  centerLabel,
   restaurants,
   newPlaces = [],
   catchPlaces = [],
@@ -29,6 +31,8 @@ export default function KakaoMap({
   onSelect,
 }: {
   appKey: string;
+  center: { lat: number; lng: number }; // 사업장 실좌표 (부모에서 key={officeName}로 위치별 리마운트)
+  centerLabel: string; // 중심 마커 라벨 (본사=SK서린빌딩, 자회사=회사명)
   restaurants: Restaurant[];
   newPlaces?: NewPlace[]; // 🆕 서울시 인허가 기반 신규 오픈 (필터 ON일 때만 전달됨)
   catchPlaces?: CatchPlace[]; // 🎯 방문 이력 없는 캐치테이블 입점 (캐치테이블 탭에서만 전달됨)
@@ -36,6 +40,11 @@ export default function KakaoMap({
   onSelect: (r: Restaurant) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  // 사업장 기준 상대좌표(dx/dy, m) → 위경도
+  const toLatLng = (p: { dx: number; dy: number }) => ({
+    lat: center.lat + p.dy / 111320,
+    lng: center.lng + p.dx / (111320 * Math.cos((center.lat * Math.PI) / 180)),
+  });
   const mapRef = useRef<{ setCenter: (p: object) => void; panTo?: (p: object) => void } | null>(null);
   const overlaysRef = useRef<{ setMap: (m: object | null) => void }[]>([]);
   const onSelectRef = useRef(onSelect);
@@ -47,14 +56,17 @@ export default function KakaoMap({
       window.kakao!.maps.load(() => {
         const { maps } = window.kakao!;
         if (!containerRef.current || mapRef.current) return;
-        const center = new maps.LatLng(COMPANY_LATLNG.lat, COMPANY_LATLNG.lng);
-        const map = new maps.Map(containerRef.current, { center, level: 4 });
+        const centerPos = new maps.LatLng(center.lat, center.lng);
+        // 식당이 멀리 퍼져 있으면 초기 배율을 한 단계씩 축소 (자회사 반경 2~5km 대응)
+        const maxDist = Math.max(0, ...restaurants.map((r) => r.distM));
+        const level = maxDist > 3000 ? 6 : maxDist > 1500 ? 5 : 4;
+        const map = new maps.Map(containerRef.current, { center: centerPos, level });
         mapRef.current = map;
 
-        // 거리 동심원 + 회사 마커
+        // 거리 동심원 + 사업장 마커
         for (const radius of [500, 1000, 1500]) {
           new maps.Circle({
-            center,
+            center: centerPos,
             radius,
             strokeWeight: 1.5,
             strokeColor: '#64748B',
@@ -64,9 +76,8 @@ export default function KakaoMap({
           }).setMap(map);
         }
         new maps.CustomOverlay({
-          position: center,
-          content:
-            '<div style="background:#3d0b12;color:#fff;font-weight:900;font-size:11px;padding:4px 8px;border-radius:8px">SK서린빌딩</div>',
+          position: centerPos,
+          content: `<div style="background:#3d0b12;color:#fff;font-weight:900;font-size:11px;padding:4px 8px;border-radius:8px">${centerLabel}</div>`,
           yAnchor: 0.5,
         }).setMap(map);
 
@@ -99,7 +110,7 @@ export default function KakaoMap({
     overlaysRef.current = [];
 
     for (const r of restaurants) {
-      const { lat, lng } = latLngOf(r);
+      const { lat, lng } = toLatLng(r);
       const isSel = selected?.id === r.id;
       // 지름 11~33px 정확히 3배 차이 — 방문 1회→11px, 상한 40회→33px, 제곱근 스케일
       const t = (Math.sqrt(Math.min(Math.max(r.visitCount, 1), 40)) - 1) / (Math.sqrt(40) - 1);
@@ -131,7 +142,7 @@ export default function KakaoMap({
 
     // 🆕 신규 오픈 핀 — 흰 바탕 + 에메랄드 테두리로 방문실적 핀과 구분, 탭하면 카카오맵 검색
     for (const p of newPlaces) {
-      const { lat, lng } = latLngOf(p);
+      const { lat, lng } = toLatLng(p);
       const el = document.createElement('div');
       el.style.cssText = 'display:flex;flex-direction:column;align-items:center;cursor:pointer';
       el.innerHTML = `
@@ -154,7 +165,7 @@ export default function KakaoMap({
 
     // 🎯 캐치테이블 입점 핀 — 흰 바탕 + 오렌지 테두리, 탭하면 캐치테이블 예약 페이지
     for (const p of catchPlaces) {
-      const { lat, lng } = latLngOf(p);
+      const { lat, lng } = toLatLng(p);
       const el = document.createElement('div');
       el.style.cssText = 'display:flex;flex-direction:column;align-items:center;cursor:pointer';
       el.innerHTML = `
@@ -182,7 +193,7 @@ export default function KakaoMap({
     const map = mapRef.current;
     const kakao = window.kakao;
     if (!selected || !map || !kakao) return;
-    const { lat, lng } = latLngOf(selected);
+    const { lat, lng } = toLatLng(selected);
     const pos = new kakao.maps.LatLng(lat, lng);
     if (map.panTo) map.panTo(pos);
     else map.setCenter(pos);

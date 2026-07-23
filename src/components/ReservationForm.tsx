@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import SniperLauncher from './SniperLauncher';
 
-// 예약 진입점 — 인원·날짜·시간을 정해 캐치테이블/네이버 딥링크로 이동하고,
-// 캐치테이블 입점 식당이면 같은 조건으로 Claude 빈자리 감시(SniperLauncher)를 걸 수 있다.
+// 예약 진입점 — 인원·날짜·시간은 Claude 빈자리 감시(SniperLauncher) 조건으로만 쓰이므로
+// 캐치테이블 입점 식당에서만 노출한다. 미입점 식당은 네이버 딥링크 안내만 남긴다.
 // 실제로 동작하지 않는 "자동 예약 시뮬레이션"은 제거하고 실동작 경로만 노출한다.
 export default function ReservationForm({
   name,
@@ -23,10 +23,28 @@ export default function ReservationForm({
   const [date, setDate] = useState(defaultDate);
   const [time, setTime] = useState('12:00');
 
-  const catchHref = catchtable
-    ? catchtableUrl ?? `https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(name)}`
-    : null;
   const naverHref = `https://map.naver.com/p/search/${encodeURIComponent(name)}`;
+
+  if (!catchtable) {
+    return (
+      <div className="mt-3 rounded-xl border border-slate-200 p-3">
+        <a
+          href={naverHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-center rounded-xl bg-[#03C75A] py-3 text-sm font-bold text-white"
+        >
+          네이버에서 예약·전화 확인
+        </a>
+        <p className="mt-1.5 text-[11px] text-slate-400">
+          캐치테이블 미입점 식당이에요 — 네이버 지도에서 예약 버튼이나 전화번호를 확인해 주세요.
+        </p>
+      </div>
+    );
+  }
+
+  const catchHref =
+    catchtableUrl ?? `https://app.catchtable.co.kr/ct/search?keyword=${encodeURIComponent(name)}`;
 
   return (
     <div className="mt-3 rounded-xl border border-slate-200 p-3">
@@ -71,46 +89,28 @@ export default function ReservationForm({
         </label>
       </div>
 
-      {catchHref ? (
-        <>
-          <div className="mt-3 flex items-stretch gap-2">
-            <a
-              href={catchHref}
-              target="_blank"
-              rel="noreferrer"
-              className="flex flex-[1.5] items-center justify-center rounded-xl bg-orange-500 py-3 text-sm font-bold text-white"
-            >
-              🎯 캐치테이블에서 예약
-            </a>
-            <a
-              href={naverHref}
-              target="_blank"
-              rel="noreferrer"
-              className="flex flex-1 items-center justify-center rounded-xl bg-[#03C75A]/10 py-3 text-xs font-bold text-[#03A050]"
-            >
-              네이버에서 보기
-            </a>
-          </div>
-          <p className="mt-1.5 text-[11px] text-slate-400">
-            자리가 없나요? 위 인원·날짜·시간 그대로 아래 🎯 버튼을 누르면 Claude가 취소표를 감시해요.
-          </p>
-          <SniperLauncher name={name} date={date} time={time} people={people} />
-        </>
-      ) : (
-        <>
-          <a
-            href={naverHref}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 flex items-center justify-center rounded-xl bg-[#03C75A] py-3 text-sm font-bold text-white"
-          >
-            네이버에서 예약·전화 확인
-          </a>
-          <p className="mt-1.5 text-[11px] text-slate-400">
-            캐치테이블 미입점 식당이에요 — 네이버 지도에서 예약 버튼이나 전화번호를 확인해 주세요.
-          </p>
-        </>
-      )}
+      <div className="mt-3 flex items-stretch gap-2">
+        <a
+          href={catchHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-[1.5] items-center justify-center rounded-xl bg-orange-500 py-3 text-sm font-bold text-white"
+        >
+          🎯 캐치테이블에서 예약
+        </a>
+        <a
+          href={naverHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-1 items-center justify-center rounded-xl bg-[#03C75A]/10 py-3 text-xs font-bold text-[#03A050]"
+        >
+          네이버에서 보기
+        </a>
+      </div>
+      <p className="mt-1.5 text-[11px] text-slate-400">
+        자리가 없나요? 위 인원·날짜·시간 그대로 아래 🎯 버튼을 누르면 Claude가 취소표를 감시해요.
+      </p>
+      <SniperLauncher name={name} date={date} time={time} people={people} />
     </div>
   );
 }

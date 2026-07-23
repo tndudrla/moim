@@ -3,7 +3,7 @@
 // 그 외 사업장은 실 식당 데이터가 없으므로 office 이름을 seed 삼아 매번 동일한 목록을 만든다.
 // (scripts/parse-xlsx.mjs 의 "결정적 seed" 사상과 동일 — 시연용 가짜 데이터)
 
-import { HQ_OFFICE, RESTAURANTS, type Cuisine, type Purpose, type Restaurant } from './data';
+import { COMPANY_LATLNG, HQ_OFFICE, RESTAURANTS, type Cuisine, type Purpose, type Restaurant } from './data';
 import { cultureOf } from './culture';
 import type { Office } from './offices';
 import overseasJson from '@/data/overseasRestaurants.json';
@@ -174,6 +174,13 @@ function generate(office: Office): Restaurant[] {
     });
   }
   return out;
+}
+
+// 사업장 실좌표 — 실측 데이터가 있는 위치만 반환 (카카오맵 실지도 표시 가능 여부 판정에 사용)
+export function officeLatLng(officeName: string): { lat: number; lng: number } | null {
+  if (officeName === HQ_OFFICE) return COMPANY_LATLNG;
+  const real = REAL[officeName];
+  return real ? { lat: real.officeLat, lng: real.officeLng } : null;
 }
 
 // 사업장별 식당 목록. 본사·해외법인·국내 자회사 모두 실 데이터, 미수집 위치만 seed 더미 폴백.
