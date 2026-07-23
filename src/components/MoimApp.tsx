@@ -688,6 +688,7 @@ export default function MoimApp() {
               appKey={KAKAO_KEY}
               center={mapCenter}
               centerLabel={officeName === HQ_OFFICE ? 'SK서린빌딩' : officeName}
+              initialLevel={officeName === HQ_OFFICE ? 4 : undefined}
               restaurants={results.filter((r) => !r.pending)}
               newPlaces={newPlaces}
               catchPlaces={catchPlaces}

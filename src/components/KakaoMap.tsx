@@ -24,6 +24,7 @@ export default function KakaoMap({
   appKey,
   center,
   centerLabel,
+  initialLevel,
   restaurants,
   newPlaces = [],
   catchPlaces = [],
@@ -33,6 +34,7 @@ export default function KakaoMap({
   appKey: string;
   center: { lat: number; lng: number }; // 사업장 실좌표 (부모에서 key={officeName}로 위치별 리마운트)
   centerLabel: string; // 중심 마커 라벨 (본사=SK서린빌딩, 자회사=회사명)
+  initialLevel?: number; // 초기 배율 고정 (미지정 시 식당 분포로 자동 결정)
   restaurants: Restaurant[];
   newPlaces?: NewPlace[]; // 🆕 서울시 인허가 기반 신규 오픈 (필터 ON일 때만 전달됨)
   catchPlaces?: CatchPlace[]; // 🎯 방문 이력 없는 캐치테이블 입점 (캐치테이블 탭에서만 전달됨)
@@ -59,7 +61,7 @@ export default function KakaoMap({
         const centerPos = new maps.LatLng(center.lat, center.lng);
         // 식당이 멀리 퍼져 있으면 초기 배율을 한 단계씩 축소 (자회사 반경 2~5km 대응)
         const maxDist = Math.max(0, ...restaurants.map((r) => r.distM));
-        const level = maxDist > 3000 ? 6 : maxDist > 1500 ? 5 : 4;
+        const level = initialLevel ?? (maxDist > 3000 ? 7 : maxDist > 1200 ? 5 : 4);
         const map = new maps.Map(containerRef.current, { center: centerPos, level });
         mapRef.current = map;
 
